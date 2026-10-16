@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>크로바가구 홈페이지 결과 보고</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* 레이아웃: 카탈로그 결과 보고와 같은 교정지형 칼럼 + 넓은 차트 판. 색은 크로바 클로버 초록. */
+:root{
+  --paper:#fafbf9; --sheet:#ffffff; --ink:#15181a; --ink-2:#4b5250; --muted:#808784;
+  --rule:#e2e5e1; --rule-2:#cbd0cb;
+  --s1:#2e7d4f; --s2:#3567a6; --s-neutral:#b7bcb7; --s-on:#ffffff;
+  --tip-bg:#15181a; --tip-fg:#f2f4f2;
+  --f-body:"IBM Plex Sans KR", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131615; --sheet:#1a1e1c; --ink:#edf0ed; --ink-2:#c0c6c2; --muted:#8b928e;
+    --rule:#2a2f2c; --rule-2:#3a403c;
+    --s1:#3f9a64; --s2:#4b80c4; --s-neutral:#555b57; --s-on:#ffffff;
+    --tip-bg:#edf0ed; --tip-fg:#15181a;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131615; --sheet:#1a1e1c; --ink:#edf0ed; --ink-2:#c0c6c2; --muted:#8b928e;
+  --rule:#2a2f2c; --rule-2:#3a403c;
+  --s1:#3f9a64; --s2:#4b80c4; --s-neutral:#555b57; --s-on:#ffffff;
+  --tip-bg:#edf0ed; --tip-fg:#15181a;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.7;word-break:keep-all;overflow-wrap:break-word;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:40px 80px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.3}
+p{margin:0}
+.mono,.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:500}
+
+.masthead{position:relative;padding:36px 32px;display:flex;flex-direction:column;gap:14px}
+.crop{position:absolute;width:22px;height:22px;border-color:var(--ink-2);border-style:solid;border-width:0}
+.crop.tl{top:0;left:0;border-top-width:1px;border-left-width:1px}
+.crop.tr{top:0;right:0;border-top-width:1px;border-right-width:1px}
+.crop.bl{bottom:0;left:0;border-bottom-width:1px;border-left-width:1px}
+.crop.br{bottom:0;right:0;border-bottom-width:1px;border-right-width:1px}
+.masthead h1{font-size:clamp(28px,5vw,42px);font-weight:700;letter-spacing:-.01em}
+.masthead .lede{font-size:17px;color:var(--ink-2);max-width:62ch}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted)}
+.meta a{color:var(--s1)}
+
+.figures{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border-top:1px solid var(--rule-2);border-bottom:1px solid var(--rule-2)}
+.fig{padding:20px 18px;display:flex;flex-direction:column;gap:4px;border-right:1px solid var(--rule)}
+.fig:last-child{border-right:0}
+.fig .v{font-size:34px;font-weight:700;line-height:1.1;letter-spacing:-.02em}
+.fig .v small{font-size:15px;font-weight:500;color:var(--ink-2);margin-left:3px}
+.fig .k{font-size:13px;color:var(--ink-2)}
+.fig .s{font-size:12px;color:var(--muted)}
+.fig.key .v{color:var(--s1)}
+
+section{display:flex;flex-direction:column;gap:18px}
+.sec-head{display:flex;flex-direction:column;gap:6px;max-width:68ch}
+.sec-head h2{font-size:22px;font-weight:700}
+.sec-head p{color:var(--ink-2)}
+.panel{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:20px;min-width:0}
+.panel h3{font-size:15px;font-weight:700;margin-bottom:4px}
+.panel .cap{font-size:13px;color:var(--muted);margin-bottom:12px}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:16px}
+.chart{width:100%;overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto;min-width:520px}
+.chart.sm svg{min-width:380px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.note{font-size:13px;color:var(--ink-2);border-left:2px solid var(--rule-2);padding-left:12px}
+
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{font-weight:500;color:var(--muted);font-size:12px;letter-spacing:.03em}
+table.kv td:first-child{white-space:nowrap;color:var(--muted)}
+td.n,th.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+td.after{color:var(--ink)}
+td.before{color:var(--ink-2)}
+td .delta{display:inline-block;font-family:var(--f-mono);font-size:12px;color:var(--s1);font-weight:500;margin-left:6px}
+tr.total td{font-weight:700;border-top:1px solid var(--rule-2)}
+
+.pages{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.pages ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.pages li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--rule);font-size:14px}
+.pages li:last-child{border-bottom:0}
+.pages li span:last-child{font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap}
+
+.blk{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.blk article{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.blk .tag{font-size:12px;color:var(--muted)}
+.blk h3{font-size:16px}
+.blk p{font-size:14px;color:var(--ink-2)}
+.blk .fix{font-size:13.5px;color:var(--ink);border-top:1px dashed var(--rule-2);padding-top:8px;margin-top:auto}
+.blk .fix b{color:var(--s1);font-weight:500}
+
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:0;border:1px solid var(--rule);border-radius:6px;background:var(--sheet);overflow:hidden}
+.flow div{padding:16px 18px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:4px;min-width:0}
+.flow div:last-child{border-right:0}
+.flow .step{font-family:var(--f-mono);font-size:12px;color:var(--s1);font-weight:500}
+.flow b{font-size:14.5px}
+.flow p{font-size:13px;color:var(--ink-2)}
+
+.src{font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+
+#tip{position:fixed;pointer-events:none;background:var(--tip-bg);color:var(--tip-fg);font-size:12.5px;line-height:1.5;padding:8px 10px;border-radius:4px;max-width:260px;z-index:10;opacity:0;transition:opacity .08s}
+#tip b{font-weight:700}
+.hit{fill:transparent;cursor:default}
+.hit:focus{outline:none}
+.hit:focus-visible{stroke:var(--ink);stroke-width:1}
+@media (prefers-reduced-motion: reduce){#tip{transition:none}}
+@media (max-width:560px){.fig{border-right:0;border-bottom:1px solid var(--rule)}.masthead{padding:28px 18px}.flow div{border-right:0;border-bottom:1px solid var(--rule)}}
+</style>
+<style>
+@page{size:A4;margin:14mm 13mm 14mm}
+@media print{
+/* PDF 출력용: A4 세로, 밝은 테마 고정, 블록이 페이지 사이에서 잘리지 않게 */
+
+:root{--paper:#ffffff}
+html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.figures{grid-template-columns:repeat(3,1fr)}
+.fig:nth-child(3){border-right:0}
+.fig:nth-child(-n+3){border-bottom:1px solid var(--rule)}
+.fig .v small{font-size:13px}
+#c-area1 svg text,#c-area2 svg text{font-size:13px}
+body{padding:0 !important;font-size:13px;line-height:1.65}
+.wrap{max-width:none;gap:30px}
+.masthead{padding:22px 24px;gap:10px}
+.masthead h1{font-size:28px}
+.masthead .lede{font-size:13.5px;max-width:none}
+.fig{padding:10px 12px}
+.fig .v{font-size:27px}
+.fig .k{font-size:12px}
+.fig .s{font-size:11px}
+.sec-head{max-width:none}
+.sec-head h2{font-size:19px}
+.panel{padding:14px 16px}
+.chart svg,.chart.sm svg{min-width:0 !important}
+#c-timeline svg text,#c-weekly svg text{font-size:15px}
+#c-weekly svg text.small{font-size:13px}
+.grid-2{grid-template-columns:1fr 1fr}
+.pages{grid-template-columns:1fr 1fr}
+.blk{grid-template-columns:1fr 1fr 1fr}
+.flow{grid-template-columns:repeat(4,1fr)}
+table{font-size:12px}
+th,td{padding:6px 8px}
+.panel,.blk article,.flow,.figures,.masthead,tr,.note,.sec-head{break-inside:avoid}
+.sec-head{break-after:avoid}
+h2,h3{break-after:avoid}
+#built,#before-after,#process,#appendix{break-before:page}
+#next{margin-top:12px}
+#tip,.hover-hint{display:none !important}
+a{color:inherit;text-decoration:none}
+
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <span class="crop tl"></span><span class="crop tr"></span><span class="crop bl"></span><span class="crop br"></span>
+  <span class="eyebrow">크로바가구 홈페이지 · 결과 보고</span>
+  <h1>4월 15일 착수한 새 홈페이지,<br>24주 만에 cloveroa.co.kr로 정식 오픈했습니다</h1>
+  <p class="lede">4월 30일 베타 사이트를 공개해 크로바가구가 화면을 직접 보며 수정 의견을 주는 방식으로 22주 동안 다듬었습니다. 같은 기간에 지능형 카탈로그에 들어갈 이미지 97장과 영상 6개 시리즈도 함께 제작했습니다. 9월 말에는 사이트를 크로바가구 소유 서버로 옮기고, 속도·보안·검색 등록을 정비한 뒤 기존 도메인으로 전환했습니다. 이 보고서는 제작 기록(변경 이력·작업 이슈·운영 문서)을 근거로 무엇을 만들었고, 오픈 과정에서 무엇이 나아졌고, 무엇이 남았는지를 정리합니다.</p>
+  <div class="meta"><span>작성 2026-10-16 · 베이스</span><span>대상 <a href="https://cloveroa.co.kr" target="_blank" rel="noopener">cloveroa.co.kr</a></span><span>공개 페이지 14개 + 관리자 화면</span><span>출처는 맨 아래에</span><span><a href="clover-home-report.pdf" download="크로바가구_홈페이지_결과보고.pdf">PDF 내려받기</a></span></div>
+</header>
+
+<div class="figures" aria-label="핵심 수치">
+  <div class="fig key"><span class="v num">24<small>주</small></span><span class="k">착수부터 정식 오픈까지</span><span class="s">착수 4/15 · 베타 공개 4/30<br>정식 오픈 9/30</span></div>
+  <div class="fig"><span class="v num">83<small>건</small></span><span class="k">반영한 변경</span><span class="s">베타 기간 54건<br>오픈 준비·안정화 29건</span></div>
+  <div class="fig"><span class="v num">14<small>개</small></span><span class="k">공개 페이지</span><span class="s">14개 모두 검색엔진에 제출<br>구글·네이버 소유 확인 완료</span></div>
+  <div class="fig"><span class="v num">97<small>장</small></span><span class="k">카탈로그 이미지</span><span class="s">지능형 카탈로그 탑재용<br>AI 생성·보정</span></div>
+  <div class="fig"><span class="v num">6<small>개 시리즈</small></span><span class="k">영상 제작</span><span class="s">베타 운영 기간 중 제작</span></div>
+  <div class="fig key"><span class="v num">−73<small>%</small></span><span class="k">첫 화면 용량</span><span class="s">4.6MB → 1.2MB<br>글꼴만 3.7MB → 422KB</span></div>
+</div>
+
+<section id="timeline">
+  <div class="sec-head">
+    <span class="eyebrow">일정</span>
+    <h2>베타 공개 후 22주 동안 고객 의견을 반영하고, 마지막 2주에 운영 전환</h2>
+    <p>착수 2주 만에 베타 사이트를 공개했습니다. 이후에는 크로바가구가 실제 화면을 보며 의견을 주면 바로 반영하는 방식으로 진행했고, 7월에 두 차례 큰 개편(2차·3차 리뉴얼)을 거쳤습니다. 사이트 수정과 함께 지능형 카탈로그 이미지 97장과 영상 6개 시리즈를 제작했습니다. 9월 22일부터 운영 전환 작업을 시작해 9월 30일 정식 오픈했고, 10월 13일까지 안정화와 추가 요청을 처리했습니다.</p>
+  </div>
+  <div class="panel"><div class="chart" id="c-timeline"></div>
+    <div class="legend"><span><i style="background:var(--s-neutral)"></i>기획·초기 제작</span><span><i style="background:var(--s1)"></i>베타 운영 · 고객 의견 반영</span><span><i style="background:var(--s2)"></i>운영 전환 · 안정화</span></div>
+  </div>
+</section>
+
+<section id="weekly">
+  <div class="sec-head">
+    <span class="eyebrow">변경 기록</span>
+    <h2>변경 83건 중 35%가 마지막 3주에 몰렸습니다</h2>
+    <p>베타 기간에는 7월 2차·3차 리뉴얼 주간에 변경이 가장 많았습니다. 7월 말부터 8월 말까지는 사이트 변경 없이 콘텐츠를 준비했습니다. 운영 전환을 시작한 9월 넷째 주부터 2주 동안 28건을 반영했습니다.</p>
+  </div>
+  <div class="panel">
+    <h3>주별 반영 건수</h3>
+    <p class="cap">주 시작일(월요일) 기준. 같은 변경을 운영에 합치는 병합 기록은 세지 않았습니다. 막대에 마우스를 올리면 그 주 주요 내용이 보입니다.</p>
+    <div class="chart" id="c-weekly"></div>
+    <div class="legend"><span><i style="background:var(--s1)"></i>베타 운영 기간</span><span><i style="background:var(--s2)"></i>운영 전환 · 안정화</span></div>
+  </div>
+</section>
+
+<section id="areas">
+  <div class="sec-head">
+    <span class="eyebrow">무엇을 했나</span>
+    <h2>베타 기간에는 화면과 관리 기능을, 오픈 준비 기간에는 안정성과 검색 노출을 다뤘습니다</h2>
+    <p>변경 하나하나를 내용별로 나눴습니다. 베타 기간 54건 중 32건이 화면 디자인과 관리자 기능입니다. 오픈 준비 기간 29건 중 14건은 보안·서버, 속도, 검색 등록입니다. 방문자 눈에 직접 보이지는 않지만 운영에 꼭 필요한 일입니다.</p>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <h3>베타 운영 기간 (4/15 ~ 9/15, 54건)</h3>
+      <div class="chart sm" id="c-area1"></div>
+    </div>
+    <div class="panel">
+      <h3>운영 전환 · 안정화 (9/22 ~ 10/13, 29건)</h3>
+      <div class="chart sm" id="c-area2"></div>
+    </div>
+  </div>
+</section>
+
+<section id="built">
+  <div class="sec-head">
+    <span class="eyebrow">만든 것</span>
+    <h2>공개 페이지 14개, 관리자 화면, 카탈로그 이미지 97장과 영상 6개 시리즈</h2>
+    <p>제품군은 공간별로 나눠 7개 페이지로 구성했습니다. 회사소개·자료실·고객지원 등 대부분의 내용은 관리자 화면에서 개발자 없이 수정할 수 있습니다. 사이트와 별도로, 지능형 카탈로그에 들어갈 이미지와 영상도 제작했습니다.</p>
+  </div>
+  <div class="pages">
+    <div class="panel">
+      <h3>회사 · 브랜드</h3>
+      <ul>
+        <li><span>홈</span><span>/</span></li>
+        <li><span>회사소개</span><span>/about</span></li>
+        <li><span>마감재</span><span>/materials</span></li>
+        <li><span>AI 허브 (지능형 카탈로그 바로가기)</span><span>/ai-hub</span></li>
+        <li><span>자료실 (카탈로그 내려받기)</span><span>/archive</span></li>
+        <li><span>고객지원 (B2B 문의 접수)</span><span>/support</span></li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>제품 · 공간</h3>
+      <ul>
+        <li><span>공간 솔루션 (전체)</span><span>/spaces</span></li>
+        <li><span>우수제품</span><span>/spaces/excellent</span></li>
+        <li><span>사무용 시스템</span><span>/spaces/office</span></li>
+        <li><span>파티션</span><span>/spaces/partition</span></li>
+        <li><span>교육용</span><span>/spaces/education</span></li>
+        <li><span>중역용</span><span>/spaces/executive</span></li>
+        <li><span>의자</span><span>/spaces/chair</span></li>
+        <li><span>소파·라운지</span><span>/spaces/sofa</span></li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>관리자 화면에서 할 수 있는 일</h3>
+      <ul>
+        <li><span>회사소개·자료실·고객지원 페이지 내용 편집</span><span>편집기</span></li>
+        <li><span>공간·마감재 이미지와 설명 교체</span><span>편집기</span></li>
+        <li><span>로고·글꼴(20종 중 선택) 변경</span><span>설정</span></li>
+        <li><span>B2B 문의 확인·일괄 삭제</span><span>접수함</span></li>
+        <li><span>문의 알림 메일 설정과 발송 기록</span><span>메일</span></li>
+        <li><span>상담 챗봇 답변(FAQ)과 참고 페이지 등록</span><span>챗봇</span></li>
+        <li><span>이미지·영상 업로드(자동 압축)</span><span>업로드</span></li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>콘텐츠 제작 (베타 운영 기간 중)</h3>
+      <ul>
+        <li><span>지능형 카탈로그 탑재용 제품 이미지</span><span>97장</span></li>
+        <li><span>이미지 작업 방식</span><span>AI 생성·보정</span></li>
+        <li><span>영상</span><span>6개 시리즈</span></li>
+      </ul>
+      <p class="cap" style="margin:12px 0 0">이미지와 영상 제작은 사이트 소스 변경이 아니므로 위 변경 건수 83건에는 들어가지 않습니다.</p>
+    </div>
+  </div>
+</section>
+
+<section id="before-after">
+  <div class="sec-head">
+    <span class="eyebrow">오픈 전후</span>
+    <h2>정식 오픈하면서 무엇이 달라졌나</h2>
+    <p>베타 사이트는 화면을 빠르게 보여 주기 위한 임시 환경에서 운영했습니다. 정식 오픈 전에 아래 항목을 정비했습니다. 화면 디자인은 바꾸지 않았습니다.</p>
+  </div>
+  <div class="panel">
+    <div class="tbl-wrap"><table>
+      <tr><th>항목</th><th>베타 (임시 환경)</th><th>정식 오픈 후</th></tr>
+      <tr><td>주소</td><td class="before">임시 주소</td><td class="after">cloveroa.co.kr, www 포함 · HTTPS 적용(인증서 자동 갱신) · http 접속은 https로 자동 이동</td></tr>
+      <tr><td>서버 소유</td><td class="before">임시 호스팅</td><td class="after">크로바가구 소유 클라우드 서버(서울 리전)</td></tr>
+      <tr><td>첫 화면 용량</td><td class="before">4.6MB</td><td class="after">1.2MB<span class="delta">−73%</span></td></tr>
+      <tr><td>글꼴</td><td class="before">방문할 때마다 한글 글꼴 십여 종을 모두 받음 (3.7MB)</td><td class="after">선택된 글꼴만 받음 (422KB)<span class="delta">−89%</span></td></tr>
+      <tr><td>글꼴 선택</td><td class="before">관리자 20종 중 일부는 골라도 적용되지 않음 · 1종은 외부 서버 오류로 실패</td><td class="after">20종 모두 실제 적용</td></tr>
+      <tr><td>이미지·영상</td><td class="before">해외 저장소에서 매번 직접 전송</td><td class="after">서울 CDN에서 캐시 전송 · 기존 이미지 주소 일괄 전환</td></tr>
+      <tr><td>보안</td><td class="before">챗봇용 외부 서비스 키가 브라우저로 전달됨 · 업로드에 관리자 확인 없음</td><td class="after">키는 서버에만 보관 · 업로드는 관리자 확인 후, 허용한 파일 형식만</td></tr>
+      <tr><td>검색 노출</td><td class="before">검색엔진이 내용 없는 빈 페이지를 읽음</td><td class="after">14개 페이지를 내용이 채워진 상태로 제공 · 사이트맵·구글 서치콘솔·네이버 서치어드바이저 등록</td></tr>
+      <tr><td>언어</td><td class="before">한국어</td><td class="after">한국어·영어 전환</td></tr>
+      <tr><td>상담 챗봇</td><td class="before">고정 답변 위주</td><td class="after">관리자에 등록한 회사 정보·FAQ·참고 페이지를 읽고 답변 · 응답 엔진 교체(예비 엔진 유지)</td></tr>
+      <tr><td>회사 메일</td><td class="before">—</td><td class="after">도메인을 옮기면서 기존 회사 메일 설정은 그대로 유지</td></tr>
+      <tr><td>수정 반영 방식</td><td class="before">바로 공개 사이트에 반영</td><td class="after">미리보기 서버에서 먼저 확인한 뒤 공개 사이트에 반영</td></tr>
+    </table></div>
+    <p class="cap" style="margin:10px 0 0">용량은 9/22 홈 첫 화면을 같은 조건에서 변경 전후로 측정한 값입니다.</p>
+  </div>
+</section>
+
+<section id="process">
+  <div class="sec-head">
+    <span class="eyebrow">앞으로의 수정 방법</span>
+    <h2>수정 요청은 미리보기에서 먼저 확인하고 공개합니다</h2>
+    <p>오픈 이후에는 공개 사이트를 직접 고치지 않습니다. 잘못 반영돼도 방문자에게 보이기 전에 걸러지고, 문제가 생기면 이전 버전으로 바로 되돌릴 수 있습니다.</p>
+  </div>
+  <div class="flow">
+    <div><span class="step">1</span><b>요청</b><p>디자인·기능 변경 요청을 받습니다. 글·이미지 교체는 관리자 화면에서 직접 할 수 있습니다.</p></div>
+    <div><span class="step">2</span><b>미리보기 반영</b><p>변경 내용을 미리보기 서버에 먼저 올립니다.</p></div>
+    <div><span class="step">3</span><b>크로바가구 확인</b><p>미리보기 화면을 보고 확인해 주시면 다음 단계로 넘어갑니다.</p></div>
+    <div><span class="step">4</span><b>공개 반영</b><p>공개 사이트에 반영하고 정상 동작을 점검합니다. 문제가 있으면 이전 버전으로 되돌립니다.</p></div>
+  </div>
+  <p class="note">이미지와 파일은 관리자 화면(/admin)에서 올려 주세요. 다른 경로로 올린 이미지는 공개 사이트에서 깨져 보일 수 있습니다.</p>
+</section>
+
+<section id="next">
+  <div class="sec-head">
+    <span class="eyebrow">남은 작업</span>
+    <h2>남은 작업 3가지와, 크로바가구에서 준비해 주실 것</h2>
+    <p>사이트는 정상 운영 중입니다. 아래는 장기 운영을 위해 이어서 할 작업입니다. 가장 큰 일은 데이터 저장소 이전이며, 코드 준비는 끝났고 운영 데이터베이스가 마련되면 바로 진행합니다.</p>
+  </div>
+  <div class="blk">
+    <article><span class="tag">데이터</span><h3>데이터 저장소를 회사 소유로 이전</h3>
+      <p>페이지 내용·문의 내역·메일 설정이 아직 베타 때 쓰던 임시 저장소에 있습니다. 이를 크로바가구 소유 데이터베이스(PostgreSQL)로 옮깁니다. 이전 코드와 데이터 이관 스크립트는 준비되어 있습니다.</p>
+      <p class="fix"><b>준비해 주실 것:</b> 운영 데이터베이스 생성, 접속 정보와 문의 메일 발송 계정 비밀번호 등록</p></article>
+    <article><span class="tag">보안</span><h3>관리자 정식 로그인</h3>
+      <p>지금은 관리자 화면에 화면 비밀번호 하나로 들어갑니다. 데이터 이전과 함께 관리자별 계정으로 로그인하고, 허용한 사람만 들어올 수 있게 바꿉니다.</p>
+      <p class="fix"><b>준비해 주실 것:</b> 관리자로 등록할 사람의 이메일 목록</p></article>
+    <article><span class="tag">보안</span><h3>HTTPS 강제 설정</h3>
+      <p>브라우저가 항상 보안 연결(https)로만 접속하도록 서버 설정을 하나 더합니다. 지금도 http 접속은 https로 옮겨지지만, 이 설정을 더하면 첫 접속부터 보안 연결이 보장됩니다.</p>
+      <p class="fix"><b>준비해 주실 것:</b> 없음 · 베이스에서 진행</p></article>
+  </div>
+</section>
+
+<section id="appendix">
+  <div class="sec-head">
+    <span class="eyebrow">부록</span>
+    <h2>숫자 근거</h2>
+    <p>위 숫자를 다시 계산할 수 있도록 기간과 집계 기준을 남깁니다.</p>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <h3>1. 기간</h3>
+      <div class="tbl-wrap"><table class="kv">
+        <tr><td>착수</td><td><span class="mono">2026-04-15</span></td></tr>
+        <tr><td>베타 공개</td><td><span class="mono">2026-04-30</span> · 고객 확인과 의견 교환 시작</td></tr>
+        <tr><td>베타 마지막 변경</td><td><span class="mono">2026-09-15</span></td></tr>
+        <tr><td>운영 전환 시작</td><td><span class="mono">2026-09-22</span></td></tr>
+        <tr><td>정식 오픈</td><td><span class="mono">2026-09-30</span> · 도메인 전환·HTTPS 완료</td></tr>
+        <tr><td>최근 반영</td><td><span class="mono">2026-10-13</span> · AI 허브 PDF 뷰어 바로가기</td></tr>
+        <tr><td>계산</td><td><span class="mono">4/15 → 9/30 = 168일 = 24주</span><br><span class="mono">4/30 → 9/30 = 153일 ≈ 22주</span></td></tr>
+      </table></div>
+    </div>
+    <div class="panel">
+      <h3>2. 변경 건수 집계</h3>
+      <div class="tbl-wrap"><table>
+        <tr><th>구분</th><th class="n">전체 기록</th><th class="n">병합 기록</th><th class="n">반영한 변경</th></tr>
+        <tr><td>베타 운영 (4/15 ~ 9/15)</td><td class="n">54</td><td class="n">0</td><td class="n">54</td></tr>
+        <tr><td>운영 전환 · 안정화 (9/22 ~ 10/13)</td><td class="n">52</td><td class="n">23</td><td class="n">29</td></tr>
+        <tr class="total"><td>합계</td><td class="n">106</td><td class="n">23</td><td class="n">83</td></tr>
+      </table></div>
+      <p class="cap" style="margin:10px 0 0">병합 기록은 검토를 마친 변경을 공개 버전에 합친 기록이라 내용이 중복되므로 뺐습니다. 운영 전환 기간에는 변경을 22개 묶음으로 검토해 반영했습니다(1건은 요청에 따라 되돌림).</p>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>3. 내용별 분류 기준</h3>
+    <div class="tbl-wrap"><table class="kv">
+      <tr><td>화면·디자인</td><td>메뉴, 레이아웃, 색, 로고, 글꼴 체계, 리뉴얼, 디자인 요청 반영</td></tr>
+      <tr><td>관리자 기능</td><td>편집기, 업로드, 이미지 압축, 표·정렬 등 관리자 화면 기능</td></tr>
+      <tr><td>문의·고객지원</td><td>B2B 문의 접수, 접수함, 알림 메일, 고객지원 화면</td></tr>
+      <tr><td>상담 챗봇</td><td>챗봇 답변 규칙, 대화 처리, 지식 관리</td></tr>
+      <tr><td>보안·서버</td><td>키 보호, 업로드 인증, 서버 이전, 저장소 연결</td></tr>
+      <tr><td>속도</td><td>글꼴 경량화, 이미지·영상 CDN 전환, 기존 이미지 주소 정리</td></tr>
+      <tr><td>검색 등록</td><td>사이트맵·robots, 공통 메타 정보, 검색엔진 소유 확인, 페이지 미리 그리기</td></tr>
+      <tr><td>기반·기타</td><td>프로젝트 초기 설정, 패키지 정리, 운영 문서</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<footer class="src">
+  <span class="eyebrow">출처와 방법</span>
+  <span>변경 기록: 홈페이지 소스 저장소의 전체 변경 이력 106건(2026-04-29 ~ 10-13). 4/15~4/28 기획·초기 제작은 저장소 생성 전이라 기록에 없습니다.</span>
+  <span>착수일·베타 공개일, 카탈로그 이미지 97장·영상 6개 시리즈: 베이스 프로젝트 담당 확인.</span>
+  <span>용량 측정: 9/22 홈 첫 화면 네트워크 측정(글꼴 경량화 작업 전후).</span>
+  <span>오픈 전후 비교·남은 작업: 베이스 작업 이슈와 운영 문서(2026-09-30 기준), 10/13 운영 점검 기록.</span>
+</footer>
+</div>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+const NS='http://www.w3.org/2000/svg';
+const tip=document.getElementById('tip');
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+function txt(parent,x,y,s,attrs){const t=el('text',Object.assign({x,y,'font-size':12,fill:'var(--muted)','font-family':'var(--f-body)'},attrs||{}),parent);t.textContent=s;return t}
+function showTip(ev,html){tip.innerHTML=html;tip.style.opacity=1;moveTip(ev)}
+function moveTip(ev){const r=tip.getBoundingClientRect();let x=ev.clientX+14,y=ev.clientY+14;if(x+r.width>innerWidth-8)x=ev.clientX-r.width-14;if(y+r.height>innerHeight-8)y=ev.clientY-r.height-14;tip.style.left=x+'px';tip.style.top=y+'px'}
+function hideTip(){tip.style.opacity=0}
+function bindHit(rect,html){rect.setAttribute('tabindex','0');rect.addEventListener('mouseenter',e=>showTip(e,html));rect.addEventListener('mousemove',moveTip);rect.addEventListener('mouseleave',hideTip);
+  rect.addEventListener('focus',()=>{const b=rect.getBoundingClientRect();showTip({clientX:b.left+b.width/2,clientY:b.top},html)});rect.addEventListener('blur',hideTip)}
+function bar(g,x,y,w,h,fill){const r=Math.min(4,h,w/2);const d=`M${x},${y+h}V${y+r}Q${x},${y} ${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h}Z`;return el('path',{d,fill},g)}
+function hbar(g,x,y,w,h,fill){const r=Math.min(4,w,h/2);const d=`M${x},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h-r}Q${x+w},${y+h} ${x+w-r},${y+h}H${x}Z`;return el('path',{d,fill},g)}
+const md=d=>{const t=new Date(d);return `${t.getMonth()+1}/${t.getDate()}`};
+
+/* 1. 일정 */
+(function(){
+  const W=960,H=190,L=20,R=20,T=52;
+  const d0=new Date('2026-04-13'),d1=new Date('2026-10-26');
+  const X=d=>L+(new Date(d)-d0)/(d1-d0)*(W-L-R);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'제작 일정: 4/15 착수, 4/30 베타 공개, 9/22 운영 전환 시작, 9/30 정식 오픈'},document.getElementById('c-timeline'));
+  ['2026-04-01','2026-05-01','2026-06-01','2026-07-01','2026-08-01','2026-09-01','2026-10-01'].forEach(d=>{
+    if(new Date(d)<d0)return;
+    el('line',{x1:X(d),x2:X(d),y1:T-6,y2:H-30,stroke:'var(--rule)','stroke-width':1},svg);
+    txt(svg,X(d),H-12,`${new Date(d).getMonth()+1}월`,{'text-anchor':'middle'});
+  });
+  const y=T+26;
+  [['2026-04-15','2026-04-30','기획·초기 제작','var(--s-neutral)',0],
+   ['2026-04-30','2026-09-16','베타 운영 · 고객 의견 반영','var(--s1)',1],
+   ['2026-09-22','2026-09-30','운영 전환','var(--s2)',1],
+   ['2026-09-30','2026-10-14','안정화','var(--s2)',1]].forEach(([a,b,lab,fill,dark])=>{
+    const x=X(a),w=X(b)-X(a)-2;
+    el('rect',{x,y,width:w,height:30,rx:4,fill,opacity:lab==='안정화'?.6:1},svg);
+    if(w>90)txt(svg,x+8,y+19,lab,{fill:dark?'var(--s-on)':'var(--ink)','font-size':12});
+    bindHit(el('rect',{x,y,width:w,height:30,class:'hit'},svg),`<b>${lab}</b><br>${md(a)} ~ ${md(new Date(new Date(b)-864e5))}`);
+  });
+  const ms=[['2026-04-15','착수',0],['2026-04-30','베타 공개',1],['2026-07-15','2차 리뉴얼',0],['2026-07-24','3차 리뉴얼',1],['2026-09-22','운영 전환 시작',0],['2026-09-30','정식 오픈',1]];
+  ms.forEach(([d,lab,row])=>{
+    const x=X(d),ty=row?T-4:T-24;
+    el('line',{x1:x,x2:x,y1:ty+4,y2:y,stroke:'var(--ink-2)','stroke-width':1},svg);
+    el('circle',{cx:x,cy:ty+4,r:3.5,fill:lab==='정식 오픈'?'var(--s1)':'var(--ink-2)'},svg);
+    const end=x>W-140;
+    txt(svg,x+(end?-6:6),ty+8,`${lab} ${md(d)}`,{'text-anchor':end?'end':'start',fill:lab==='정식 오픈'?'var(--s1)':'var(--ink-2)','font-size':12,'font-weight':lab==='정식 오픈'?700:400});
+  });
+})();
+
+/* 2. 주별 반영 건수 */
+(function(){
+  const notes={'2026-04-27':'저장소 생성 · 베타 공개(4/30) · 메뉴·홈 링크','2026-05-18':'자재 분류 · AI 허브 페이지 추가','2026-06-01':'관리자 화면 개선 · 브랜드 색 · 디자인·지속가능 콘텐츠','2026-06-08':'조달 링크 · 업로드 이미지 압축','2026-06-22':'B2B 문의 기능','2026-06-29':'로고 교체','2026-07-06':'상담 챗봇 · 푸터 고객지원 링크','2026-07-13':'2차 리뉴얼 · 문의 메일 관리 · 고객지원 개선','2026-07-20':'3차 리뉴얼 · 포트폴리오 메뉴','2026-08-24':'관리자 업로드 안내 문구','2026-09-07':'회사소개·사례 편집기 · 자료실 정렬 · 글꼴 체계','2026-09-14':'제품 카테고리 목록 · 우수제품 배치','2026-09-21':'글꼴 경량화 · 이미지 CDN · 키 보호 · 서버 이전 · 챗봇 지식 관리 · 검색 기본 설정','2026-09-28':'다국어 · 검색엔진 등록 · 페이지 미리 그리기 · 마감재 섹션 · 자료실 오류 수정 · 정식 오픈','2026-10-12':'AI 허브 PDF 뷰어 바로가기'};
+  const counts={'2026-04-27':4,'2026-05-04':1,'2026-05-18':3,'2026-05-25':1,'2026-06-01':4,'2026-06-08':4,'2026-06-22':1,'2026-06-29':2,'2026-07-06':10,'2026-07-13':9,'2026-07-20':4,'2026-08-24':1,'2026-09-07':7,'2026-09-14':3,'2026-09-21':15,'2026-09-28':13,'2026-10-12':1};
+  const weeks=[];for(let t=new Date('2026-04-13');t<=new Date('2026-10-12');t=new Date(t.getTime()+7*864e5)){const k=t.toISOString().slice(0,10);weeks.push([k,counts[k]||0])}
+  const W=960,H=260,L=40,R=12,T=24,B=40,ih=H-T-B,top=16;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'주별 반영 건수 막대그래프'},document.getElementById('c-weekly'));
+  [0,4,8,12,16].forEach(v=>{const y=T+ih-v/top*ih;el('line',{x1:L,x2:W-R,y1:y,y2:y,stroke:v?'var(--rule)':'var(--rule-2)'},svg);txt(svg,L-8,y+4,v,{'text-anchor':'end','font-family':'var(--f-mono)'})});
+  const bw=(W-L-R)/weeks.length;
+  weeks.forEach(([k,v],i)=>{
+    const h=v/top*ih,x=L+i*bw+bw*.18,w=bw*.64,y=T+ih-h,p2=k>='2026-09-21';
+    if(v)bar(svg,x,y,w,h,p2?'var(--s2)':'var(--s1)');
+    if(i%2===0)txt(svg,x+w/2,H-B+18,md(k),{'text-anchor':'middle','font-family':'var(--f-mono)','font-size':11});
+    if(v>=9)txt(svg,x+w/2,y-7,v,{'text-anchor':'middle',fill:'var(--ink)','font-family':'var(--f-mono)','font-weight':500});
+    bindHit(el('rect',{x:L+i*bw,y:T,width:bw,height:ih,class:'hit'},svg),`<b>${md(k)} 주 · ${v}건</b>${notes[k]?'<br>'+notes[k]:(v?'':'<br>사이트 변경 없음')}`);
+  });
+  const xa=L+weeks.findIndex(w=>w[0]==='2026-07-27')*bw,xb=L+weeks.findIndex(w=>w[0]==='2026-08-24')*bw;
+  el('path',{d:`M${xa+4},${T+ih-30}V${T+ih-24}H${xb-4}V${T+ih-30}`,fill:'none',stroke:'var(--muted)','stroke-width':1},svg);
+  txt(svg,(xa+xb)/2,T+ih-38,'콘텐츠 준비 기간',{'text-anchor':'middle','font-size':11.5});
+})();
+
+/* 3. 내용별 분류 */
+function areaChart(id,data,fill,total){
+  const W=380,rowH=32,L=104,R=58,T=6,H=T+data.length*rowH+4,max=Math.max(...data.map(d=>d[1]));
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':data.map(d=>`${d[0]} ${d[1]}건`).join(', ')},document.getElementById(id));
+  data.forEach(([lab,v,desc],i)=>{
+    const y=T+i*rowH,w=v/max*(W-L-R);
+    txt(svg,L-10,y+rowH/2+4,lab,{'text-anchor':'end',fill:'var(--ink-2)','font-size':12.5});
+    hbar(svg,L,y+7,Math.max(w,2),rowH-14,fill);
+    txt(svg,L+w+8,y+rowH/2+4,`${v}`,{fill:'var(--ink)','font-family':'var(--f-mono)','font-weight':500});
+    txt(svg,L+w+8+(v>=10?24:14),y+rowH/2+4,`${Math.round(v/total*100)}%`,{'font-family':'var(--f-mono)','font-size':11});
+    bindHit(el('rect',{x:0,y,width:W,height:rowH,class:'hit'},svg),`<b>${lab} ${v}건</b><br>${desc}`);
+  });
+}
+areaChart('c-area1',[
+  ['화면·디자인',20,'메뉴·홈 구성, 브랜드 색, 로고, 2차·3차 리뉴얼, 포트폴리오 메뉴, 글꼴 체계, 제품 카테고리'],
+  ['관리자 기능',12,'편집기(회사소개·사례·자료실), 업로드·압축, 제품 표, 정렬'],
+  ['상담 챗봇',7,'자주 묻는 질문 즉시 답변, 안내 문구, 대화 처리'],
+  ['문의·고객지원',6,'B2B 문의 접수, 접수함, 알림 메일 관리'],
+  ['기반·기타',6,'프로젝트 초기 설정, 패키지 정리'],
+  ['콘텐츠',3,'자재 분류, 조달 링크, 문구 정리']],'var(--s1)',54);
+areaChart('c-area2',[
+  ['보안·서버',6,'키 보호, 서버 이전, 업로드 저장소 이전, 업로드 인증'],
+  ['기능·오류 수정',5,'이미지 재업로드 오류, 자료실 다운로드 오류, 카탈로그 파일 업로드(요청으로 되돌림), PDF 뷰어 바로가기'],
+  ['속도',4,'글꼴 경량화, 이미지·영상 CDN, 기존 이미지 주소 일괄 전환'],
+  ['상담 챗봇',4,'회사 정보 답변, FAQ·참고 페이지 관리, 응답 엔진 교체'],
+  ['검색 등록',4,'사이트맵·robots, 메타 정보, 구글·네이버 소유 확인, 페이지 미리 그리기'],
+  ['디자인 반영',3,'디자인 요청 반영, 홈 블록 정리, 마감재 섹션'],
+  ['운영 문서',2,'운영·인수인계 문서'],
+  ['다국어',1,'한국어·영어 전환']],'var(--s2)',29);
+})();
+</script>
+
+</body>
+</html>
