@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>크로바 p1 제작 실측</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* 레이아웃: 인쇄 교정지처럼 좁은 본문 칼럼 + 넓은 차트 판. 머리에 재단선(크롭마크). */
+:root{
+  --paper:#fbfbf9; --sheet:#ffffff; --ink:#16171b; --ink-2:#4f5057; --muted:#85868c;
+  --rule:#e4e3de; --rule-2:#cfcec8;
+  --s1:#2a78d6; --s2:#eb6834; --s-neutral:#b9b8b2;
+  --hm-0:#f3f6fb; --hm-1:#cde2fb; --hm-2:#9ec5f4; --hm-3:#6da7ec; --hm-4:#3987e5; --hm-5:#256abf; --hm-6:#184f95;
+  --hm-ink-dark:#ffffff;
+  --tip-bg:#16171b; --tip-fg:#f4f4f2;
+  --f-body:"IBM Plex Sans KR", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141518; --sheet:#1b1c20; --ink:#efefec; --ink-2:#c2c1ba; --muted:#8d8e93;
+    --rule:#2c2d31; --rule-2:#3a3b40;
+    --s1:#3987e5; --s2:#d95926; --s-neutral:#55565c;
+    --hm-0:#1f2229; --hm-1:#1d3352; --hm-2:#184f95; --hm-3:#1c5cab; --hm-4:#256abf; --hm-5:#3987e5; --hm-6:#6da7ec;
+    --tip-bg:#efefec; --tip-fg:#16171b;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141518; --sheet:#1b1c20; --ink:#efefec; --ink-2:#c2c1ba; --muted:#8d8e93;
+  --rule:#2c2d31; --rule-2:#3a3b40;
+  --s1:#3987e5; --s2:#d95926; --s-neutral:#55565c;
+  --hm-0:#1f2229; --hm-1:#1d3352; --hm-2:#184f95; --hm-3:#1c5cab; --hm-4:#256abf; --hm-5:#3987e5; --hm-6:#6da7ec;
+  --tip-bg:#efefec; --tip-fg:#16171b;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.7;word-break:keep-all;overflow-wrap:break-word;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:40px 80px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.3}
+p{margin:0}
+.mono,.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:500}
+
+/* 머리: 재단선 */
+.masthead{position:relative;padding:36px 32px;display:flex;flex-direction:column;gap:14px}
+.crop{position:absolute;width:22px;height:22px;border-color:var(--ink-2);border-style:solid;border-width:0}
+.crop.tl{top:0;left:0;border-top-width:1px;border-left-width:1px}
+.crop.tr{top:0;right:0;border-top-width:1px;border-right-width:1px}
+.crop.bl{bottom:0;left:0;border-bottom-width:1px;border-left-width:1px}
+.crop.br{bottom:0;right:0;border-bottom-width:1px;border-right-width:1px}
+.masthead h1{font-size:clamp(28px,5vw,42px);font-weight:700;letter-spacing:-.01em}
+.masthead .lede{font-size:17px;color:var(--ink-2);max-width:62ch}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted)}
+
+/* 숫자 판 */
+.figures{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));border-top:1px solid var(--rule-2);border-bottom:1px solid var(--rule-2)}
+.fig{padding:20px 18px;display:flex;flex-direction:column;gap:4px;border-right:1px solid var(--rule)}
+.fig:last-child{border-right:0}
+.fig .v{font-size:34px;font-weight:700;line-height:1.1;letter-spacing:-.02em}
+.fig .v small{font-size:15px;font-weight:500;color:var(--ink-2);margin-left:3px}
+.fig .k{font-size:13px;color:var(--ink-2)}
+.fig .s{font-size:12px;color:var(--muted)}
+.fig.key .v{color:var(--s2)}
+@media (min-width:900px){.figures{grid-template-columns:repeat(5,auto)}}
+
+.btn{display:inline-flex;align-items:center;padding:8px 14px;border:1px solid var(--rule-2);border-radius:6px;color:var(--ink);text-decoration:none;font-size:13.5px;font-weight:500;background:var(--sheet)}
+.btn:hover{border-color:var(--ink-2)}
+.btn:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+.btn.primary{background:var(--s1);border-color:var(--s1);color:#fff;cursor:pointer;font-family:inherit}
+section{display:flex;flex-direction:column;gap:18px}
+.sec-head{display:flex;flex-direction:column;gap:6px;max-width:68ch}
+.sec-head h2{font-size:22px;font-weight:700}
+.sec-head p{color:var(--ink-2)}
+.panel{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:20px;min-width:0}
+.panel h3{font-size:15px;font-weight:700;margin-bottom:4px}
+.panel .cap{font-size:13px;color:var(--muted);margin-bottom:12px}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:16px}
+.chart{width:100%;overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto;min-width:520px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;vertical-align:1px}
+.note{font-size:13px;color:var(--ink-2);border-left:2px solid var(--rule-2);padding-left:12px}
+
+/* 표 */
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{font-weight:500;color:var(--muted);font-size:12px;letter-spacing:.03em}
+table.kv td:first-child{white-space:nowrap;color:var(--muted)}
+td.n,th.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.hm td.c{text-align:center;font-family:var(--f-mono);font-variant-numeric:tabular-nums;min-width:58px;border:2px solid var(--sheet)}
+.hm td.c.dk{color:var(--hm-ink-dark)}
+.hm tr.total td{font-weight:700;border-top:1px solid var(--rule-2)}
+
+/* 병목 목록 */
+.blk{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.blk article{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.blk .tag{font-size:12px;color:var(--muted)}
+.blk h3{font-size:16px}
+.blk p{font-size:14px;color:var(--ink-2)}
+.blk .fix{font-size:13.5px;color:var(--ink);border-top:1px dashed var(--rule-2);padding-top:8px;margin-top:auto}
+.blk .fix b{color:var(--s1);font-weight:500}
+
+.src{font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.src code{font-family:var(--f-mono);font-size:12px}
+
+#tip{position:fixed;pointer-events:none;background:var(--tip-bg);color:var(--tip-fg);font-size:12.5px;line-height:1.5;padding:8px 10px;border-radius:4px;max-width:260px;z-index:10;opacity:0;transition:opacity .08s}
+#tip b{font-weight:700}
+.hit{fill:transparent;cursor:default}
+.hit:focus{outline:none}
+.hit:focus-visible{stroke:var(--ink);stroke-width:1}
+@media (prefers-reduced-motion: reduce){#tip{transition:none}}
+@media (max-width:560px){.chart svg{min-width:720px}.fig{border-right:0;border-bottom:1px solid var(--rule)}.masthead{padding:28px 18px}}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <span class="crop tl"></span><span class="crop tr"></span><span class="crop bl"></span><span class="crop br"></span>
+  <span class="eyebrow">DESIGNCRAFT 카탈로그 · 현황 근거 자료</span>
+  <h1>견적 당시 3.5주로 잡은 카탈로그 디자인,<br>실제로는 9주가 걸렸습니다</h1>
+  <p class="lede">크로바가구 2026 vol.3 카탈로그(내지 322쪽)는 견적 당시 디자인 작업을 3.5주로 예상해 그 시간을 기준으로 견적을 냈지만, 시안(8/10)부터 인쇄 발주(10/12)까지 9주가 걸렸습니다. 늘어난 5.5주는 견적에 들어 있지 않은 작업 시간입니다. 작업은 메인 비주얼 디자인 1명과 서브 편집 디자인 1명, 모두 2명이 했습니다. 실제 제작 과정(8/10 시안 ~ 10/14 최종본)에서 나온 수정 코멘트, 작업 파일, 카톡 대화를 숫자로 정리했습니다.</p>
+  <div class="meta"><span>분석일 2026-10-14</span><span>내지 322쪽 · 7개 파트</span><span>상품 3,281개(모델명 기준)</span><span>인쇄 7,000부</span><span>출처는 맨 아래에</span></div>
+</header>
+
+<section id="overrun">
+  <div class="sec-head">
+    <span class="eyebrow">견적 vs 실제</span>
+    <h2>견적 당시 예상보다 5.5주, 2.6배 더 걸렸습니다</h2>
+    <p>견적은 디자인 작업 3.5주를 기준으로 냈습니다. 견적 기준 마감(9/3)에는 아직 1차 조판 중이었고, 요구사항 반영 기간은 전부 견적 밖의 작업이었습니다.</p>
+  </div>
+  <div class="panel"><div class="chart" id="c-overrun"></div></div>
+</section>
+
+<div class="figures" aria-label="핵심 수치">
+  <div class="fig key"><span class="v num">+5.5<small>주</small></span><span class="k">견적보다 늘어난 기간</span><span class="s">견적 기준 3.5주 → 실제 9주(2.6배)<br>시안 8/10 ~ 인쇄 발주 10/12</span></div>
+  <div class="fig"><span class="v num">2<small>명</small></span><span class="k">작업 인원</span><span class="s">메인 비주얼 디자인 1명<br>서브 편집 디자인 1명</span></div>
+  <div class="fig key"><span class="v num">2,052<small>건</small></span><span class="k">수정 요청 주고받기</span><span class="s">PDF 코멘트 1,236 + 카톡 메시지 816<br>카톡 사진(캡처) 112장 · 검수 PDF 34개</span></div>
+  <div class="fig"><span class="v num">3,281<small>개</small></span><span class="k">수록 상품(모델명 기준)</span><span class="s">최종본에서 식별번호와 1:1 대응</span></div>
+  <div class="fig"><span class="v num">58<small>%</small></span><span class="k">데이터·표기 규칙 문제</span><span class="s">490건 중 286건</span></div>
+</div>
+
+<section id="timeline">
+  <div class="sec-head">
+    <span class="eyebrow">일정</span>
+    <h2>시안부터 인쇄 발주까지 9주, 그중 요구사항 반영이 약 4.5주</h2>
+    <p>인쇄 발주는 10/12였고, 납품 기한은 지원사업 기간이 늘어나면서 10/29로 협의했습니다. 일정 안에 마쳤지만, 1차 조판(8/26~9/11)보다 요구사항 반영(9/14~10/13)에 더 긴 시간이 들었습니다.</p>
+  </div>
+  <div class="panel"><div class="chart" id="c-timeline"></div></div>
+</section>
+
+<section id="rounds">
+  <div class="sec-head">
+    <span class="eyebrow">수정 코멘트</span>
+    <h2>수정이 줄지 않고, 전체를 처음 한 번에 본 날 가장 많았습니다</h2>
+    <p>보통은 라운드가 진행될수록 수정이 줄어야 합니다. 이번에는 파트별로 나눠 검수하다가 합본 가제본(10/2)에서 252건이 한꺼번에 나왔습니다. 파트 사이에서 표기가 서로 맞지 않는 문제가 그때야 드러났습니다.</p>
+  </div>
+  <div class="panel">
+    <h3>검수 라운드별 코멘트 수</h3>
+    <p class="cap">라운드 = 검수 PDF 파일명의 날짜. 10/01은 인증마크 일괄 검토 포함.</p>
+    <div class="chart" id="c-rounds"></div>
+    <div class="legend"><span><i style="background:var(--s1)"></i>파트별 검수</span><span><i style="background:var(--s2)"></i>합본 검수(가제본·확인용)</span></div>
+  </div>
+  <div class="panel">
+    <h3>파트 × 라운드</h3>
+    <p class="cap">칸이 진할수록 코멘트가 많습니다. 빈칸은 그 라운드에 검수하지 않은 파트입니다. 의자·교육용은 분량이 많아 코멘트도 많았고, <b>중역용(MVP 대상)은 6펼침면·30건</b>입니다.</p>
+    <div class="tbl-wrap"><table class="hm" id="t-heat"></table></div>
+  </div>
+</section>
+
+<section id="types">
+  <div class="sec-head">
+    <span class="eyebrow">무엇을 고쳤나</span>
+    <h2>요청 10건 중 6건은 디자인이 아니라 데이터와 표기 규칙</h2>
+    <p>중복을 제거한 490건을 내용별로 분류했습니다. 옵션 표기, 규격 오타, 품목 누락, 색상 코드, 인증 표기는 규칙을 한 번 정하면 322쪽 전체에 기계적으로 적용됩니다. 검수자도 “이후 페이지 동일 적용”, “일괄 변경”이라고 직접 썼습니다.</p>
+  </div>
+  <div class="panel">
+    <h3>수정 요청 유형 (중복 제거 490건)</h3>
+    <div class="chart" id="c-types"></div>
+    <div class="legend"><span><i style="background:var(--s1)"></i>데이터·표기 규칙 — 규칙 사전으로 해결</span><span><i style="background:var(--s2)"></i>배치·이미지·디자인</span><span><i style="background:var(--s-neutral)"></i>분류 불명(짧은 메모)</span></div>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <h3>코멘트 형태 (1,236건)</h3>
+      <p class="cap">사각형·손글씨·선은 위치만 표시합니다. 그래서 대부분 기계가 읽을 수 없습니다.</p>
+      <div class="chart" id="c-forms"></div>
+    </div>
+    <div class="panel">
+      <h3>검수자가 직접 쓴 “일괄 적용” 요청</h3>
+      <div class="tbl-wrap"><table>
+        <tr><th>코멘트 원문</th><th>규칙으로 바꾸면</th></tr>
+        <tr><td>WW --&gt; WH 이후페이지 동일적용</td><td>색상 코드 치환 1줄</td></tr>
+        <tr><td>다얼키 → 다이얼키</td><td>용어 치환 1줄</td></tr>
+        <tr><td>700 &gt; 750 &gt; 800 순서</td><td>정렬 키: 깊이 오름차순</td></tr>
+        <tr><td>단체표준 인증마크 Item List로</td><td>인증 표기 레벨: 공통</td></tr>
+        <tr><td>띄어쓰기 통일(이후 내용 포함)</td><td>옵션 표기 문법</td></tr>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<section id="files">
+  <div class="sec-head">
+    <span class="eyebrow">작업 파일</span>
+    <h2>수정할 때마다 InDesign 파일을 통째로 복사해 39GB</h2>
+    <p>날짜별로 작업 폴더를 새로 만들고 파트 파일을 복사해서 고쳤습니다. 디자이너가 “파일을 열고 닫는 데만 시간이 걸린다”며 수정 요청을 한 번에 모아 달라고 한 이유입니다.</p>
+  </div>
+  <div class="panel">
+    <h3>작업 폴더 누적 용량</h3>
+    <p class="cap">막대 = 그날 폴더 크기, 선 = 누적. 막대에 마우스를 올리면 InDesign·PDF 개수가 보입니다.</p>
+    <div class="chart" id="c-files"></div>
+    <div class="legend"><span><i style="background:var(--s1)"></i>날짜 폴더 크기(GB)</span><span><i style="background:var(--ink-2);height:2px;vertical-align:3px"></i>누적(GB, 오른쪽 숫자는 끝점 값)</span></div>
+  </div>
+</section>
+
+<section id="chat">
+  <div class="sec-head">
+    <span class="eyebrow">소통</span>
+    <h2>카톡 816건, 사진 112장: 요구사항을 받을 도구가 없었습니다</h2>
+    <p>수정 요청은 PDF 코멘트, 카톡 캡처, 메일, 전화로 나뉘어 들어왔습니다. 이미지는 빈자리를 고객이 찾아 보내 주는 방식이라 마지막 주까지 이어졌습니다.</p>
+  </div>
+  <div class="panel">
+    <h3>날짜별 카톡 메시지 수</h3>
+    <p class="cap">아래 줄의 점 = 그날 오간 이미지·자료 zip(10/14 최종본 전달 제외).</p>
+    <div class="chart" id="c-chat"></div>
+    <div class="legend"><span><i style="background:var(--s1)"></i>메시지</span><span><i style="background:var(--s2);border-radius:50%"></i>zip 전송</span></div>
+  </div>
+</section>
+
+<section id="cost">
+  <div class="sec-head">
+    <span class="eyebrow">작업 시간</span>
+    <h2>요구사항 반영에만 약 179시간, 1차 조판까지 합치면 약 334시간</h2>
+    <p>9/11 메일("의자·소파까지 내지 작업 완료, 수정사항 반영 업무 남아 있음")을 기준으로 기간을 둘로 나눴습니다. InDesign 작업 중에는 PC 부하 때문에 다른 일을 할 수 없어서, 디자이너의 근무일은 전부 이 일에 쓴 것으로 계산했습니다.<br><b>실제 작업은 메인 비주얼 디자인 1명과 서브 편집 디자인 1명, 2명이 했습니다. 아래 시간은 그중 작업자 1인의 작업 시간만 집계한 값이라, 실제 투입 시간은 이보다 큽니다.</b></p>
+  </div>
+  <div class="tbl-wrap"><table>
+    <tr><th>단계</th><th>기간</th><th class="n">근무일</th><th class="n">확인된 야근</th><th class="n">작업 시간(1인)</th><th class="n">인/일</th></tr>
+    <tr><td>1차 조판(신규 내지)</td><td class="mono">8/26 ~ 9/11</td><td class="n">13일</td><td class="n">51시간</td><td class="n">약 155시간</td><td class="n">19.4인/일</td></tr>
+    <tr><td><b>요구사항 반영</b></td><td class="mono">9/14 ~ 10/13</td><td class="n">18일</td><td class="n">35시간</td><td class="n"><b>약 179시간</b></td><td class="n">22.4인/일</td></tr>
+    <tr class="total"><td>합계</td><td></td><td class="n">31일</td><td class="n">86시간</td><td class="n"><b>약 334시간</b></td><td class="n">41.8인/일</td></tr>
+  </table></div>
+  <div class="grid-2">
+    <div class="panel">
+      <h3>요구사항 1건당 작업 시간</h3>
+      <p class="cap">요구사항 반영 작업 시간(작업자 1인) 약 179시간을 기준 단위로 나눴습니다.</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>기준</th><th class="n">수</th><th class="n">1건당</th></tr>
+        <tr><td>주고받은 요청(코멘트 + 카톡)</td><td class="n">2,052</td><td class="n">약 5분</td></tr>
+        <tr><td>PDF 수정 코멘트</td><td class="n">1,236</td><td class="n">약 9분</td></tr>
+        <tr><td><b>중복 제거한 요구사항</b></td><td class="n">490</td><td class="n"><b>약 22분</b></td></tr>
+        <tr><td>검수 라운드(메일 1~11차)</td><td class="n">11</td><td class="n">약 16시간</td></tr>
+        <tr><td>내지 1쪽</td><td class="n">322</td><td class="n">약 33분</td></tr>
+        <tr><td>상품 1개(반영만 / 조판 포함)</td><td class="n">3,281</td><td class="n">약 3분 / 6분</td></tr>
+      </table></div>
+    </div>
+    <div class="panel">
+      <h3>계산 기준</h3>
+      <div class="tbl-wrap"><table class="kv">
+        <tr><td>인/일</td><td>8시간 = 1인/일. 근무일 × 8시간에 야근 시간을 더함</td></tr>
+        <tr><td>야근</td><td>18시 이후, 그날 마지막 기록까지. 기록은 작업 파일 저장·메일 발신·카톡 시각</td></tr>
+        <tr><td>휴일</td><td>8/29(토) 작업 기록 → 4시간으로 계산</td></tr>
+        <tr><td>범위</td><td>실제 작업 2명(메인 비주얼 디자인 1 · 서브 편집 디자인 1) 중 작업자 1인의 작업 시간만 집계</td></tr>
+        <tr><td>제외</td><td>8/10~8/24 시안 단계</td></tr>
+      </table></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <h3>요구사항 유형별 작업 시간</h3>
+      <p class="cap">중복 제거 490건 × 1건당 약 22분. 유형마다 걸린 시간이 같다고 본 배분입니다.</p>
+      <div class="chart" id="c-typecost"></div>
+      <div class="legend"><span><i style="background:var(--s1)"></i>데이터·표기 규칙 — 규칙 사전으로 해결</span><span><i style="background:var(--s2)"></i>배치·이미지·디자인</span><span><i style="background:var(--s-neutral)"></i>분류 불명</span></div>
+      <p class="cap" style="margin:10px 0 0">파란 막대(286건)를 합치면 <b>약 105시간(약 13인/일)</b>입니다. 이 유형이 모두 사라진다고 본 절감 상한입니다.</p>
+    </div>
+    <div class="panel">
+      <h3>파트별 작업 시간</h3>
+      <p class="cap">PDF 코멘트 1,236건 × 1건당 약 9분. 코멘트 수에 비례해 시간이 들었다고 본 배분입니다.</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>파트</th><th class="n">코멘트</th><th class="n">작업 시간</th><th class="n">상품 1개당</th></tr>
+        <tr><td>의자</td><td class="n">317</td><td class="n">약 46시간</td><td class="n">약 7.5분</td></tr>
+        <tr><td>교육용</td><td class="n">267</td><td class="n">약 39시간</td><td class="n">약 2.3분</td></tr>
+        <tr><td>사무용</td><td class="n">182</td><td class="n">약 26시간</td><td class="n">약 1.9분</td></tr>
+        <tr><td>우수제품</td><td class="n">145</td><td class="n">약 21시간</td><td class="n">약 2.0분</td></tr>
+        <tr><td><b>중역용</b> (MVP)</td><td class="n">30</td><td class="n">약 4.3시간</td><td class="n">약 3.7분</td></tr>
+        <tr><td>소파 이후</td><td class="n">17</td><td class="n">약 2.5시간</td><td class="n">약 0.6분</td></tr>
+        <tr><td>파티션</td><td class="n">10</td><td class="n">약 1.4시간</td><td class="n">약 0.6분</td></tr>
+        <tr><td>합본(가제본·확인용)</td><td class="n">268</td><td class="n">약 39시간</td><td class="n">—</td></tr>
+      </table></div>
+      <p class="cap" style="margin:10px 0 0">상품 1개당 반영 시간은 의자가 가장 깁니다(상품 365개에 코멘트 317건). 합본 단계의 약 39시간은 파트 사이 불일치를 맞추는 데 쓰였습니다.</p>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>날짜별 마지막 작업 기록 시각</h3>
+    <p class="cap">막대 = 18시 이후 일한 시간(확인된 최소치). 기록이 남지 않은 야근은 들어가지 않았습니다. 기록이 있는 30일 중 25일이 18시를 넘겼습니다.</p>
+    <div class="chart" id="c-late"></div>
+    <div class="legend"><span><i style="background:var(--s1)"></i>1차 조판</span><span><i style="background:var(--s2)"></i>요구사항 반영</span></div>
+  </div>
+</section>
+
+<section id="bottlenecks">
+  <div class="sec-head">
+    <span class="eyebrow">병목 5가지</span>
+    <h2>조판 기술보다 자료와 기준에서 시간이 들었습니다</h2>
+  </div>
+  <div class="blk">
+    <article><span class="tag">이미지</span><h3>빈자리를 고객이 찾아 주는 구조</h3>
+      <p>파일명이 식별번호와 모델명으로 섞여 있었고, 한 모델에 이미지가 2장인 경우도 있었습니다. 해상도 부족은 10/8에야 발견했습니다.</p>
+      <p class="fix"><b>서비스:</b> 조판 전에 누락·저해상 목록을 자동으로 뽑고, 후보가 여러 장이면 고르게 함</p></article>
+    <article><span class="tag">데이터 원본</span><h3>작업 중에 원본이 알림 없이 바뀜</h3>
+      <p>9/1 그룹 5개 추가, 열람대 4개 모델·식별번호 변경. 원본의 중복 등록 오류도 그대로 옮겨졌습니다.</p>
+      <p class="fix"><b>서비스:</b> 스냅샷을 고정하고 원본과 자동 비교, 기준일 표시, 중복 경고</p></article>
+    <article><span class="tag">그룹핑</span><h3>인쇄용 묶음 ≠ 웹 묶음</h3>
+      <p>키 3종 합치기, 인도어→아웃도어 순서, 700/750/800 세로 정렬. 이런 기준을 작업 도중에 하나씩 정했습니다.</p>
+      <p class="fix"><b>서비스:</b> 원본은 두고 인쇄용 그룹핑 규칙을 카테고리별로 저장</p></article>
+    <article><span class="tag">검수</span><h3>파트별 검수 vs 전체 일관성</h3>
+      <p>고객은 파트별로 순서대로 검수하길 원했고, 디자이너는 같은 품목이 앞뒤에 흩어져 있어 전체를 한 번에 보자고 했습니다.</p>
+      <p class="fix"><b>서비스:</b> 규칙이 전체 권에 적용되므로 파트별로 검수해도 일관성 유지</p></article>
+    <article><span class="tag">조립</span><h3>마지막 단계의 조립 실수</h3>
+      <p>인덱스 탭 중복·누락, p110~111 누락, 확인용 합본과 인쇄 파일이 서로 다름.</p>
+      <p class="fix"><b>서비스:</b> 3종 출력을 같은 조판에서 생성하고, 출력 전 자동 점검</p></article>
+  </div>
+</section>
+
+<section id="cost-basis">
+  <div class="sec-head">
+    <span class="eyebrow">부록</span>
+    <h2>작업 시간 근거</h2>
+    <p>위 시간 숫자를 다시 계산할 수 있도록 기간·근무일·야근 기록·계산식을 남깁니다.</p>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <h3>1. 기간을 나눈 근거</h3>
+      <div class="tbl-wrap"><table class="kv">
+        <tr><td>9/8 메일</td><td>「내지 확인-3차」 "신규 내지 작업이 완료되면 수정사항 반영 예정입니다."</td></tr>
+        <tr><td>9/11 메일</td><td>「내지 확인-4차」 "의자 &amp; 소파 카테고리까지 내지 작업 완료… 수정사항 반영 업무 남아 있습니다."</td></tr>
+        <tr><td>9/22 메일</td><td>「내지 확인-5차(전체 페이지)」 수정 반영본 첫 전달</td></tr>
+        <tr><td>10/13 카톡</td><td>"발주 후 몇 가지 수정사항… 최종 파일", "내일부터 추가 수정은 어렵습니다"</td></tr>
+      </table></div>
+    </div>
+    <div class="panel">
+      <h3>2. 근무일과 투입 비율</h3>
+      <div class="tbl-wrap"><table class="kv">
+        <tr><td>1차 조판</td><td>8/26~9/11 평일 13일</td></tr>
+        <tr><td>요구사항 반영</td><td>9/14~10/13 평일 18일</td></tr>
+        <tr><td>뺀 공휴일</td><td>9/24·9/25 추석, 10/5 개천절 대체공휴일, 10/9 한글날</td></tr>
+        <tr><td>디자이너</td><td>InDesign 작업 중 PC 부하로 다른 업무 불가 → 근무일 100% 투입</td></tr>
+        <tr><td>범위</td><td>실제 작업 2명 중 작업자 1인의 작업 시간만 집계</td></tr>
+      </table></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>3. 계산식</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>항목</th><th>1차 조판</th><th>요구사항 반영</th></tr>
+      <tr><td>근무 시간 (근무일 × 8시간)</td><td class="mono">13일 × 8 = 104시간</td><td class="mono">18일 × 8 = 144시간</td></tr>
+      <tr><td>야근(18시 이후, 확인된 최소치)</td><td class="mono">47.2시간 + 토요일 4시간 = 51.2시간</td><td class="mono">35.0시간</td></tr>
+      <tr class="total"><td>작업 시간(작업자 1인) = 근무 시간 + 야근</td><td class="mono">155.2시간 (19.4인/일)</td><td class="mono">179.0시간 (22.4인/일)</td></tr>
+    </table></div>
+    <p class="cap" style="margin:10px 0 0">야근은 기록으로 확인된 최소치라, 실제 작업 시간은 이보다 길 수 있습니다.</p>
+  </div>
+  <div class="panel">
+    <h3>4. 날짜별 야근 기록</h3>
+    <p class="cap">그날 가장 늦은 기록을 썼습니다. 출처: 작업 폴더의 InDesign·PDF 수정 시각, 고객사·인쇄소로 보낸 메일 발신 시각(디자이너 메일함), 카톡 메시지 시각.</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>날짜</th><th>단계</th><th>마지막 기록</th><th>출처</th><th class="n">18시 이후(시간)</th></tr>
+      <tr><td class="mono">8/26</td><td>1차 조판</td><td class="mono">20:17</td><td>파일 저장 (카톡 19:06)</td><td class="n">2.28</td></tr>
+      <tr><td class="mono">8/27</td><td>1차 조판</td><td class="mono">22:49</td><td>파일 저장</td><td class="n">4.82</td></tr>
+      <tr><td class="mono">8/28</td><td>1차 조판</td><td class="mono">18:19</td><td>파일 저장</td><td class="n">0.32</td></tr>
+      <tr><td class="mono">8/29 토</td><td>1차 조판</td><td class="mono">19:21</td><td>파일 저장 → 휴일 4시간으로 계산</td><td class="n">4.00 (휴일)</td></tr>
+      <tr><td class="mono">8/31</td><td>1차 조판</td><td class="mono">22:49</td><td>파일 저장 (메일 22:37 「내지 검수용_1 우수제품」)</td><td class="n">4.82</td></tr>
+      <tr><td class="mono">9/1</td><td>1차 조판</td><td class="mono">다음날 01:06</td><td>파일 저장 (카톡 20:23)</td><td class="n">7.10</td></tr>
+      <tr><td class="mono">9/2</td><td>1차 조판</td><td class="mono">다음날 00:12</td><td>메일 「내지 확인-2차」</td><td class="n">6.20</td></tr>
+      <tr><td class="mono">9/3</td><td>1차 조판</td><td class="mono">23:34</td><td>파일 저장</td><td class="n">5.57</td></tr>
+      <tr><td class="mono">9/4</td><td>1차 조판</td><td class="mono">16:17</td><td>파일 저장</td><td class="n">—</td></tr>
+      <tr><td class="mono">9/7</td><td>1차 조판</td><td class="mono">12:58</td><td>파일 저장</td><td class="n">—</td></tr>
+      <tr><td class="mono">9/8</td><td>1차 조판</td><td class="mono">23:45</td><td>파일 저장 (메일 23:31 「내지 확인-3차」)</td><td class="n">5.75</td></tr>
+      <tr><td class="mono">9/9</td><td>1차 조판</td><td class="mono">20:21</td><td>파일 저장</td><td class="n">2.35</td></tr>
+      <tr><td class="mono">9/10</td><td>1차 조판</td><td class="mono">23:05</td><td>파일 저장</td><td class="n">5.08</td></tr>
+      <tr><td class="mono">9/11</td><td>1차 조판</td><td class="mono">20:57</td><td>메일 「내지 확인-4차」</td><td class="n">2.95</td></tr>
+      <tr><td class="mono">9/14</td><td>반영</td><td class="mono">—</td><td>근무일, 시각 기록 없음</td><td class="n">—</td></tr>
+      <tr><td class="mono">9/15</td><td>반영</td><td class="mono">20:13</td><td>파일 저장</td><td class="n">2.22</td></tr>
+      <tr><td class="mono">9/16</td><td>반영</td><td class="mono">20:27</td><td>파일 저장</td><td class="n">2.45</td></tr>
+      <tr><td class="mono">9/17</td><td>반영</td><td class="mono">20:58</td><td>파일 저장</td><td class="n">2.97</td></tr>
+      <tr><td class="mono">9/18</td><td>반영</td><td class="mono">18:35</td><td>파일 저장</td><td class="n">0.58</td></tr>
+      <tr><td class="mono">9/21</td><td>반영</td><td class="mono">21:53</td><td>파일 저장 (카톡 19:37)</td><td class="n">3.88</td></tr>
+      <tr><td class="mono">9/22</td><td>반영</td><td class="mono">17:15</td><td>메일 「내지 확인-5차(전체 페이지)」</td><td class="n">—</td></tr>
+      <tr><td class="mono">9/23</td><td>반영</td><td class="mono">19:35</td><td>메일 「내지 확인-6차」</td><td class="n">1.58</td></tr>
+      <tr><td class="mono">9/28</td><td>반영</td><td class="mono">16:12</td><td>메일(인쇄소)</td><td class="n">—</td></tr>
+      <tr><td class="mono">9/29</td><td>반영</td><td class="mono">19:49</td><td>메일 「내지 확인-7차」</td><td class="n">1.82</td></tr>
+      <tr><td class="mono">9/30</td><td>반영</td><td class="mono">19:17</td><td>메일 「내지 확인-8차」</td><td class="n">1.28</td></tr>
+      <tr><td class="mono">10/1</td><td>반영</td><td class="mono">22:59</td><td>메일 「내지 확인-9차」</td><td class="n">4.98</td></tr>
+      <tr><td class="mono">10/2</td><td>반영</td><td class="mono">17:15</td><td>메일(인쇄소, 표지)</td><td class="n">—</td></tr>
+      <tr><td class="mono">10/6</td><td>반영</td><td class="mono">—</td><td>근무일, 시각 기록 없음</td><td class="n">—</td></tr>
+      <tr><td class="mono">10/7</td><td>반영</td><td class="mono">21:54</td><td>파일 저장</td><td class="n">3.90</td></tr>
+      <tr><td class="mono">10/8</td><td>반영</td><td class="mono">19:11</td><td>카톡 (메일 18:42 「검수용-11차」)</td><td class="n">1.18</td></tr>
+      <tr><td class="mono">10/12</td><td>반영</td><td class="mono">22:38</td><td>파일 저장</td><td class="n">4.63</td></tr>
+      <tr><td class="mono">10/13</td><td>반영</td><td class="mono">21:34</td><td>카톡 「수정반영한 최종 파일」</td><td class="n">3.57</td></tr>
+      <tr class="total"><td colspan="4">합계 (1차 조판 47.24 + 휴일 4 / 반영 35.04)</td><td class="n">86.28</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<footer class="src">
+  <span class="eyebrow">출처와 방법</span>
+  <span>수정 코멘트: 검수 PDF 34개의 주석을 PyMuPDF로 추출 → <code>analysis/annotations.json</code> (1,236건), 유형 분류는 중복 제거 490건 기준(<code>.dev/docs/261014_01</code> 4장).</span>
+  <span>작업 파일: <code>p1 카탈로그/03 작업파일/</code> 날짜 폴더 29개의 파일 수·크기(읽기 전용 집계).</span>
+  <span>소통: 카톡방 내보내기(8/26~10/14) 메시지 816건 → <code>.dev/docs/261014_03</code>.</span>
+  <span>상품 수: 최종본 <code>2026_vol.3_크로바가구 카탈로그_확인용(웹용).pdf</code> 텍스트에서 8자리 식별번호와 짝지은 모델명(중복 제거).</span>
+  <span>작업 시간: 작업 파일(InDesign·PDF) 수정 시각, 고객사·인쇄소로 보낸 메일 발신 시각, 카톡 시각을 합쳐 날짜별 마지막 작업 시각을 구함.</span>
+  <span>상세 문서: <code>.dev/docs/261014_01_현황분석</code>, <code>261014_02_서비스기획</code>, <code>261014_03_진행과정분석_카톡</code></span>
+</footer>
+</div>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+const NS='http://www.w3.org/2000/svg';
+const tip=document.getElementById('tip');
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+function txt(parent,x,y,s,attrs){const t=el('text',Object.assign({x,y,'font-size':12,fill:'var(--muted)','font-family':'var(--f-body)'},attrs||{}),parent);t.textContent=s;return t}
+function showTip(ev,html){tip.innerHTML=html;tip.style.opacity=1;moveTip(ev)}
+function moveTip(ev){const r=tip.getBoundingClientRect();let x=ev.clientX+14,y=ev.clientY+14;if(x+r.width>innerWidth-8)x=ev.clientX-r.width-14;if(y+r.height>innerHeight-8)y=ev.clientY-r.height-14;tip.style.left=x+'px';tip.style.top=y+'px'}
+function hideTip(){tip.style.opacity=0}
+function bindHit(rect,html){rect.setAttribute('tabindex','0');rect.addEventListener('mouseenter',e=>showTip(e,html));rect.addEventListener('mousemove',moveTip);rect.addEventListener('mouseleave',hideTip);
+  rect.addEventListener('focus',()=>{const b=rect.getBoundingClientRect();showTip({clientX:b.left+b.width/2,clientY:b.top},html)});rect.addEventListener('blur',hideTip)}
+// rounded-top bar anchored to baseline
+function bar(g,x,y,w,h,fill){const r=Math.min(4,h,w/2);const d=`M${x},${y+h}V${y+r}Q${x},${y} ${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h}Z`;return el('path',{d,fill},g)}
+function hbar(g,x,y,w,h,fill){const r=Math.min(4,w,h/2);const d=`M${x},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h-r}Q${x+w},${y+h} ${x+w-r},${y+h}H${x}Z`;return el('path',{d,fill},g)}
+function ticks(max,n){const step=Math.pow(10,Math.floor(Math.log10(max/n)));const m=[1,2,2.5,5,10].map(k=>k*step).find(s=>max/s<=n)||step*10;const out=[];for(let v=0;v<=max+1e-9;v+=m)out.push(+v.toFixed(6));if(out[out.length-1]<max)out.push(out[out.length-1]+m);return out}
+
+/* 0. 예상 vs 실제 — 좁은 화면은 글자를 막대 위로 올린 배치 */
+(function(){
+  const box=document.getElementById('c-overrun');
+  const PH=[[0,2.3,'시안','8/10 ~ 8/26'],[2.3,5,'1차 조판','8/26 ~ 9/11'],[5,9,'요구사항 반영','9/14 ~ 10/12']];
+  const PLAN='디자인 작업(비주얼 디자인+편집 디자인)';
+  function draw(){
+    box.innerHTML='';
+    const cw=box.clientWidth||960,narrow=cw<600;
+    const W=narrow?cw:960,H=narrow?150:176,L=narrow?2:56,R=narrow?34:70,wk=9.6,X=w=>L+w/wk*(W-L-R);
+    const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'견적 기준 3.5주와 실제 9주 비교'},box);
+    if(narrow)svg.style.minWidth='0';
+    const fs=narrow?11.5:12.5,bh=narrow?26:34,y1=narrow?24:34,y2=narrow?80:86,dl=X(3.5);
+    if(narrow){
+      txt(svg,L,16,'견적 · '+PLAN,{fill:'var(--ink-2)','font-size':fs});
+      txt(svg,L,y2-8,'실제',{fill:'var(--ink-2)','font-size':fs});
+    }else{
+      txt(svg,L-12,y1+22,'견적',{'text-anchor':'end',fill:'var(--ink-2)','font-size':13});
+      txt(svg,L-12,y2+22,'실제',{'text-anchor':'end',fill:'var(--ink-2)','font-size':13});
+    }
+    el('rect',{x:X(0),y:y1,width:dl-X(0),height:bh,rx:4,fill:'var(--s-neutral)'},svg);
+    if(!narrow)txt(svg,X(0)+10,y1+22,PLAN,{fill:'var(--ink)','font-size':fs});
+    txt(svg,dl+6,y1+bh/2+4,narrow?'3.5주 · 견적 기준 마감 9/3':'3.5주',{fill:'var(--ink)','font-family':narrow?'var(--f-body)':'var(--f-mono)','font-weight':500,'font-size':narrow?11.5:13});
+    bindHit(el('rect',{x:X(0),y:y1,width:dl-X(0),height:bh,class:'hit'},svg),`<b>견적 당시 예상</b><br>${PLAN} 3.5주 (8/10 ~ 9/3)`);
+    el('rect',{x:X(0),y:y2,width:dl-X(0),height:bh,rx:4,fill:'var(--s-neutral)'},svg);
+    el('rect',{x:dl,y:y2,width:X(9)-dl,height:bh,rx:4,fill:'var(--s2)'},svg);
+    el('rect',{x:dl,y:y2,width:6,height:bh,fill:'var(--s2)'},svg);
+    PH.forEach(([a,b,lab,d],i)=>{
+      if(i)el('line',{x1:X(a),x2:X(a),y1:y2,y2:y2+bh,stroke:'var(--sheet)','stroke-width':2},svg);
+      txt(svg,X(a)+(narrow?5:10),y2+bh/2+4,narrow&&i===1?'조판':lab,{fill:a>=3.5?'#fff':'var(--ink)','font-size':narrow?11:fs});
+      bindHit(el('rect',{x:X(a),y:y2,width:X(b)-X(a),height:bh,class:'hit'},svg),`<b>${lab}</b><br>${d}`);
+    });
+    txt(svg,X(9)+6,y2+bh/2+5,'9주',{fill:'var(--s2)','font-family':'var(--f-mono)','font-weight':700,'font-size':14});
+    el('line',{x1:dl,x2:dl,y1:narrow?y1-4:18,y2:narrow?y1+bh+6:y2+bh+8,stroke:'var(--ink)','stroke-width':1.2,'stroke-dasharray':'4 3'},svg);
+    if(!narrow)txt(svg,dl,12,'견적 기준 마감 9/3',{'text-anchor':'middle',fill:'var(--ink)','font-size':12});
+    const by=y2+bh+14;
+    el('path',{d:`M${dl},${by-6}V${by}H${X(9)}V${by-6}`,fill:'none',stroke:'var(--s2)','stroke-width':1.5},svg);
+    txt(svg,(dl+X(9))/2,by+22,'+5.5주 견적 외 작업 · 견적의 2.6배',{'text-anchor':'middle',fill:'var(--s2)','font-size':narrow?13:14,'font-weight':700});
+  }
+  draw();
+  let t;addEventListener('resize',()=>{clearTimeout(t);t=setTimeout(draw,150)});
+})();
+
+/* 1. 일정 */
+(function(){
+  const W=960,H=170,L=20,R=20,T=40;
+  const d0=new Date('2026-08-10'),d1=new Date('2026-11-01');
+  const X=d=>L+(new Date(d)-d0)/(d1-d0)*(W-L-R);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'제작 일정'},document.getElementById('c-timeline'));
+  ['2026-08-10','2026-08-24','2026-09-07','2026-09-21','2026-10-05','2026-10-19'].forEach(d=>{
+    el('line',{x1:X(d),x2:X(d),y1:T-8,y2:H-30,stroke:'var(--rule)','stroke-width':1},svg);
+    const dt=new Date(d);txt(svg,X(d),H-12,`${dt.getMonth()+1}/${dt.getDate()}`,{'text-anchor':'middle','font-family':'var(--f-mono)'});
+  });
+  const y=T+20;
+  [['2026-08-10','2026-08-26','시안','var(--rule-2)'],['2026-08-26','2026-09-12','1차 조판','var(--s1)'],['2026-09-14','2026-10-13','요구사항 반영(가제본 포함)','var(--s2)'],['2026-10-13','2026-10-29','인쇄·납품','var(--rule-2)']].forEach(([a,b,lab,fill])=>{
+    const x=X(a),w=X(b)-X(a)-2;
+    el('rect',{x,y,width:w,height:30,rx:4,fill},svg);
+    const dark=fill.includes('s1')||fill.includes('s2');
+    if(w>50)txt(svg,x+8,y+19,lab,{fill:dark?'#fff':'var(--ink)','font-size':12});
+    const fa=new Date(a),fb=new Date(b);
+    bindHit(el('rect',{x,y,width:w,height:30,class:'hit'},svg),`<b>${lab}</b><br>${fa.getMonth()+1}/${fa.getDate()} ~ ${fb.getMonth()+1}/${fb.getDate()}`);
+  });
+  [['2026-10-02','가제본 발주'],['2026-10-12','인쇄 발주'],['2026-10-29','납품 기한(협의)']].forEach(([d,lab],i)=>{
+    const x=X(d);el('line',{x1:x,x2:x,y1:T-14,y2:y,stroke:'var(--ink-2)','stroke-width':1},svg);
+    el('circle',{cx:x,cy:T-14,r:3.5,fill:'var(--ink-2)'},svg);
+    txt(svg,x+(i===2?-6:6),T-10,lab,{'text-anchor':i===2?'end':'start',fill:'var(--ink-2)','font-size':12});
+  });
+})();
+
+/* 2. 라운드별 코멘트 */
+(function(){
+  const data=[['08/31',53],['09/02',102],['09/03',99],['09/08',126],['09/10',193],['09/22',181],['09/23',51],['09/29',143],['10/01',20],['10/02',252,1,'가제본 합본'],['10/08',16,1,'확인용 합본']];
+  const W=960,H=290,L=44,R=12,T=24,B=40,ih=H-T-B;
+  const max=280,tk=ticks(max,5);const top=tk[tk.length-1];
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'라운드별 코멘트 막대그래프'},document.getElementById('c-rounds'));
+  tk.forEach(v=>{const y=T+ih-v/top*ih;el('line',{x1:L,x2:W-R,y1:y,y2:y,stroke:v?'var(--rule)':'var(--rule-2)'},svg);txt(svg,L-8,y+4,v,{'text-anchor':'end','font-family':'var(--f-mono)'})});
+  const bw=(W-L-R)/data.length;
+  data.forEach(([d,v,merged,lab],i)=>{
+    const h=v/top*ih,x=L+i*bw+bw*.2,w=bw*.6,y=T+ih-h;
+    bar(svg,x,y,w,h,merged?'var(--s2)':'var(--s1)');
+    txt(svg,x+w/2,H-B+18,d,{'text-anchor':'middle','font-family':'var(--f-mono)'});
+    if(v>=190||merged)txt(svg,x+w/2,y-7,v,{'text-anchor':'middle',fill:'var(--ink)','font-family':'var(--f-mono)','font-weight':500});
+    const hit=el('rect',{x:L+i*bw,y:T,width:bw,height:ih,class:'hit'},svg);
+    bindHit(hit,`<b>${d}${lab?' · '+lab:''}</b><br>코멘트 ${v}건`);
+  });
+})();
+
+/* 3. 파트 × 라운드 히트맵 */
+(function(){
+  const parts=['우수제품','사무용','파티션','교육용','중역용','의자','소파 이후','합본'];
+  const rows=[['08/31',53,0,0,0,0,0,0,0],['09/02',14,72,3,0,13,0,0,0],['09/03',39,51,4,0,5,0,0,0],['09/08',0,0,0,126,0,0,0,0],['09/10',0,0,0,0,0,180,13,0],['09/22',17,16,3,13,2,130,0,0],['09/23',10,7,0,30,0,0,4,0],['09/29',10,34,0,91,8,0,0,0],['10/01',2,2,0,7,2,7,0,0],['10/02',0,0,0,0,0,0,0,252],['10/08',0,0,0,0,0,0,0,16]];
+  const t=document.getElementById('t-heat');
+  const steps=[[1,'--hm-1'],[10,'--hm-2'],[30,'--hm-3'],[60,'--hm-4'],[120,'--hm-5'],[200,'--hm-6']];
+  let h='<tr><th>라운드</th>'+parts.map(p=>`<th class="n"${p==='중역용'?' style="color:var(--ink)"':''}>${p}</th>`).join('')+'<th class="n">계</th></tr>';
+  const tot=new Array(parts.length).fill(0);
+  rows.forEach(r=>{h+=`<tr><td class="mono">${r[0]}</td>`;let s=0;
+    r.slice(1).forEach((v,i)=>{tot[i]+=v;s+=v;if(!v){h+=`<td class="c" style="background:var(--hm-0)"></td>`;return}
+      let tok='--hm-1',lvl=0;steps.forEach(([m,k],j)=>{if(v>=m){tok=k;lvl=j}});
+      h+=`<td class="c${lvl>=3?' dk':''}" style="background:var(${tok})" title="${parts[i]} ${r[0]}: ${v}건">${v}</td>`});
+    h+=`<td class="n">${s}</td></tr>`});
+  h+='<tr class="total"><td>계</td>'+tot.map(v=>`<td class="n">${v}</td>`).join('')+`<td class="n">${tot.reduce((a,b)=>a+b,0).toLocaleString()}</td></tr>`;
+  t.innerHTML=h;
+})();
+
+/* 4. 유형 */
+(function(){
+  const data=[['옵션·사양 표기 규칙',126,'r','"+ 내부선반 / 다이얼키", "양면형→복식"'],['규격·수치',59,'r','"D8000→D800", "H450~540"'],['순서·배치·그룹핑',58,'d','"700 > 750 > 800 순서"'],['이미지',57,'d','"내부도 삽입", "전자키 이미지 교체"'],['품목 추가·누락·삭제',44,'r','"지능형 카달로그 누락상품"'],['색상·스와치',37,'r','"WW→WH 이후페이지 동일적용"'],['인증마크',20,'r','"NEP 기간만료 삭제"'],['정렬·간격·크기',12,'d','"앞뒤 페이지와 사진 크기 맞춰주세요"'],['문구·카피',5,'d','줄바꿈 위치'],['분류 불명',72,'o','"5단", "R형" 같은 짧은 메모']];
+  const W=960,rowH=30,L=170,R=60,T=8,H=T+data.length*rowH+8;
+  const max=130;const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'수정 요청 유형 가로 막대그래프'},document.getElementById('c-types'));
+  const fill={r:'var(--s1)',d:'var(--s2)',o:'var(--s-neutral)'};
+  data.forEach(([k,v,g,ex],i)=>{
+    const y=T+i*rowH,w=v/max*(W-L-R);
+    txt(svg,L-10,y+rowH/2+4,k,{'text-anchor':'end',fill:'var(--ink-2)','font-size':13});
+    hbar(svg,L,y+6,w,rowH-12,fill[g]);
+    txt(svg,L+w+8,y+rowH/2+4,`${v}  (${Math.round(v/490*100)}%)`,{'font-family':'var(--f-mono)',fill:'var(--ink-2)'});
+    const hit=el('rect',{x:0,y,width:W,height:rowH,class:'hit'},svg);
+    bindHit(hit,`<b>${k}</b> · ${v}건<br>예: ${ex}`);
+  });
+  el('line',{x1:L,x2:L,y1:T,y2:H-8,stroke:'var(--rule-2)'},svg);
+})();
+
+/* 4-2. 유형별 작업 시간 */
+(function(){
+  const data=[['옵션·사양 표기 규칙',126,'r'],['규격·수치',59,'r'],['순서·배치·그룹핑',58,'d'],['이미지',57,'d'],['품목 추가·누락·삭제',44,'r'],['색상·스와치',37,'r'],['인증마크',20,'r'],['정렬·간격·크기, 문구',17,'d'],['분류 불명',72,'o']];
+  const unit=179.04/490;
+  const W=520,rowH=28,L=128,R=96,T=4,H=T+data.length*rowH+4,max=126*unit;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'요구사항 유형별 작업 시간 가로 막대그래프'},document.getElementById('c-typecost'));
+  svg.style.minWidth='420px';
+  const fill={r:'var(--s1)',d:'var(--s2)',o:'var(--s-neutral)'};
+  data.forEach(([k,n,g],i)=>{const y=T+i*rowH,v=n*unit,w=v/max*(W-L-R);
+    txt(svg,L-10,y+rowH/2+4,k,{'text-anchor':'end',fill:'var(--ink-2)','font-size':12.5});
+    hbar(svg,L,y+6,w,rowH-12,fill[g]);
+    txt(svg,L+w+8,y+rowH/2+4,`${Math.round(v)}시간`,{'font-family':'var(--f-mono)',fill:'var(--ink-2)','font-size':12});
+    bindHit(el('rect',{x:0,y,width:W,height:rowH,class:'hit'},svg),`<b>${k}</b><br>${n}건 × 약 22분 = 약 ${Math.round(v)}시간`)});
+  el('line',{x1:L,x2:L,y1:T,y2:H-4,stroke:'var(--rule-2)'},svg);
+})();
+
+/* 5. 코멘트 형태 */
+(function(){
+  const data=[['사각형',515,'위치만'],['손글씨(Ink)',397,'위치만'],['선',82,'위치만'],['텍스트 메모',126,'글'],['글상자',59,'글'],['스탬프',57,'글']];
+  const W=520,rowH=28,L=96,R=56,T=4,H=T+data.length*rowH+4,max=520;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'코멘트 형태'},document.getElementById('c-forms'));
+  svg.style.minWidth='380px';
+  data.forEach(([k,v,g],i)=>{const y=T+i*rowH,w=v/max*(W-L-R);
+    txt(svg,L-10,y+rowH/2+4,k,{'text-anchor':'end',fill:'var(--ink-2)','font-size':13});
+    hbar(svg,L,y+6,w,rowH-12,g==='위치만'?'var(--s-neutral)':'var(--s1)');
+    txt(svg,L+w+8,y+rowH/2+4,v,{'font-family':'var(--f-mono)',fill:'var(--ink-2)'});
+    bindHit(el('rect',{x:0,y,width:W,height:rowH,class:'hit'},svg),`<b>${k}</b> · ${v}건<br>${g==='위치만'?'위치 표시 위주 — 내용은 손글씨·말로 전달':'글로 내용을 남김'}`)});
+})();
+
+/* 6. 작업 파일 */
+(function(){
+  const data=[['08/20',106,1,0],['08/24',125,1,1],['08/26',1228,7,7],['08/27',1426,9,1],['08/28',1457,9,1],['08/29',1472,9,1],['08/31',553,3,1],['09/01',975,5,0],['09/02',1049,6,4],['09/03',1312,7,4],['09/04',856,6,0],['09/07',856,6,0],['09/08',1053,7,1],['09/09',965,7,0],['09/10',1286,9,2],['09/14',1159,8,1],['09/17',986,7,0],['09/18',987,7,0],['09/21',1030,7,1],['09/22',2028,7,7],['09/23',2043,8,5],['09/29',1662,7,4],['09/30',382,2,2],['10/01',2600,10,7],['10/02',3184,13,17,'가제본용'],['10/07',1265,8,2],['10/08',2336,8,9],['10/12',2714,8,9],['10/13',2888,9,8,'최종 인쇄용']];
+  const W=960,H=300,L=44,R=56,T=20,B=42,ih=H-T-B;
+  let cum=0;const cumArr=data.map(d=>(cum+=d[1])/1024);
+  const top=40,tk=[0,10,20,30,40];
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'작업 폴더 크기와 누적 용량'},document.getElementById('c-files'));
+  tk.forEach(v=>{const y=T+ih-v/top*ih;el('line',{x1:L,x2:W-R,y1:y,y2:y,stroke:v?'var(--rule)':'var(--rule-2)'},svg);txt(svg,L-8,y+4,v+'GB',{'text-anchor':'end','font-family':'var(--f-mono)','font-size':11})});
+  const bw=(W-L-R)/data.length;
+  // 막대: 같은 축(GB). 하루 크기는 작으므로 그대로 그려 비교 가능
+  data.forEach((d,i)=>{const gb=d[1]/1024,h=gb/top*ih,x=L+i*bw+bw*.18,w=bw*.64;bar(svg,x,T+ih-h,w,h,'var(--s1)');
+    if(i%3===0||i===data.length-1)txt(svg,x+w/2,H-B+18,d[0],{'text-anchor':'middle','font-family':'var(--f-mono)','font-size':11})});
+  const pts=cumArr.map((v,i)=>[L+i*bw+bw/2,T+ih-v/top*ih]);
+  el('path',{d:'M'+pts.map(p=>p.join(',')).join('L'),fill:'none',stroke:'var(--ink-2)','stroke-width':2,'stroke-linejoin':'round'},svg);
+  const last=pts[pts.length-1];el('circle',{cx:last[0],cy:last[1],r:4,fill:'var(--ink-2)',stroke:'var(--sheet)','stroke-width':2},svg);
+  txt(svg,last[0]+8,last[1]+4,cumArr[cumArr.length-1].toFixed(1)+'GB',{'font-family':'var(--f-mono)',fill:'var(--ink)','font-weight':500});
+  data.forEach((d,i)=>bindHit(el('rect',{x:L+i*bw,y:T,width:bw,height:ih,class:'hit'},svg),`<b>${d[0]}${d[4]?' · '+d[4]:''}</b><br>폴더 ${(d[1]/1024).toFixed(2)}GB · InDesign ${d[2]}개 · PDF ${d[3]}개<br>누적 ${cumArr[i].toFixed(1)}GB`));
+})();
+
+/* 8. 마지막 작업 시각 */
+(function(){
+  const A=1,B=2;
+  const data=[['08/26',20.28,A],['08/27',22.82,A],['08/28',18.32,A],['08/29',19.35,A,'토요일'],['08/31',22.82,A],['09/01',25.1,A,'새벽 1:06'],['09/02',24.2,A,'자정 넘김'],['09/03',23.57,A],['09/04',16.28,A],['09/07',12.97,A],['09/08',23.75,A],['09/09',20.35,A],['09/10',23.08,A],['09/11',20.95,A],
+    ['09/15',20.22,B],['09/16',20.45,B],['09/17',20.97,B],['09/18',18.58,B],['09/21',21.88,B],['09/22',17.22,B],['09/23',19.58,B],['09/28',16.2,B],['09/29',19.82,B],['09/30',19.28,B],['10/01',22.98,B],['10/02',17.25,B],['10/07',21.9,B],['10/08',19.18,B],['10/12',22.63,B],['10/13',21.57,B]];
+  const W=960,H=280,L=52,R=12,T=16,B0=40,ih=H-T-B0,y0=12,y1=26;
+  const Y=v=>T+ih-(v-y0)/(y1-y0)*ih;
+  const fmt=v=>{const h=Math.floor(v),m=Math.round((v-h)*60);return `${h>=24?'다음날 '+(h-24):h}:${String(m).padStart(2,'0')}`};
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'날짜별 마지막 작업 기록 시각'},document.getElementById('c-late'));
+  [12,15,18,21,24].forEach(v=>{const y=Y(v);el('line',{x1:L,x2:W-R,y1:y,y2:y,stroke:v===18?'var(--ink-2)':'var(--rule)','stroke-dasharray':v===18?'4 3':''},svg);txt(svg,L-8,y+4,v===24?'0시':v+'시',{'text-anchor':'end','font-family':'var(--f-mono)','font-size':11})});
+  const bw=(W-L-R)/data.length;
+  data.forEach(([d,v,p,note],i)=>{const cx=L+i*bw+bw/2,col=p===A?'var(--s1)':'var(--s2)';
+    if(v>18){const w=bw*.5;bar(svg,cx-w/2,Y(v),w,Y(18)-Y(v),col)}
+    el('circle',{cx,cy:Y(v),r:4,fill:v>18?col:'var(--sheet)',stroke:col,'stroke-width':2},svg);
+    if(i%2===0)txt(svg,cx,H-B0+18,d,{'text-anchor':'middle','font-family':'var(--f-mono)','font-size':11});
+    bindHit(el('rect',{x:L+i*bw,y:T,width:bw,height:ih,class:'hit'},svg),`<b>${d}${note?' · '+note:''}</b><br>마지막 기록 ${fmt(v)}${v>18?`<br>18시 이후 ${(v-18).toFixed(1)}시간`:''}<br>${p===A?'1차 조판':'요구사항 반영'}`)});
+})();
+
+/* 7. 카톡 */
+(function(){
+  const data=[['08/26',48,2],['08/27',13,1],['08/28',11,0],['09/01',56,2],['09/02',3,1],['09/03',84,4],['09/04',38,0],['09/07',9,0],['09/08',4,0],['09/14',5,0],['09/16',17,3],['09/17',5,0],['09/18',8,0],['09/21',28,0],['09/22',37,2],['09/23',35,1],['09/29',30,1],['09/30',30,0],['10/01',62,0],['10/02',43,0],['10/06',8,0],['10/07',86,1],['10/08',44,1],['10/12',81,1],['10/13',20,0],['10/14',11,0]];
+  const W=960,H=290,L=40,R=12,T=16,B=74,ih=H-T-B,top=100,tk=[0,25,50,75,100];
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'날짜별 카톡 메시지 수와 zip 전송'},document.getElementById('c-chat'));
+  tk.forEach(v=>{const y=T+ih-v/top*ih;el('line',{x1:L,x2:W-R,y1:y,y2:y,stroke:v?'var(--rule)':'var(--rule-2)'},svg);txt(svg,L-8,y+4,v,{'text-anchor':'end','font-family':'var(--f-mono)','font-size':11})});
+  const bw=(W-L-R)/data.length,zy=H-B+44;
+  txt(svg,L-8,zy+4,'zip',{'text-anchor':'end','font-size':11});
+  el('line',{x1:L,x2:W-R,y1:zy,y2:zy,stroke:'var(--rule)'},svg);
+  data.forEach(([d,m,z],i)=>{const h=m/top*ih,x=L+i*bw+bw*.2,w=bw*.6;bar(svg,x,T+ih-h,w,h,'var(--s1)');
+    if(i%2===0)txt(svg,x+w/2,H-B+18,d,{'text-anchor':'middle','font-family':'var(--f-mono)','font-size':11});
+    for(let k=0;k<z;k++)el('circle',{cx:x+w/2+(k-(z-1)/2)*10,cy:zy,r:4,fill:'var(--s2)',stroke:'var(--sheet)','stroke-width':2},svg);
+    bindHit(el('rect',{x:L+i*bw,y:T,width:bw,height:H-T-16,class:'hit'},svg),`<b>${d}</b><br>메시지 ${m}건${z?` · zip ${z}개`:''}`)});
+  [['09/03',84,'수정 1회차 · 이미지 4건'],['10/07',86,'가제본 수령']].forEach(([d,m,l])=>{const i=data.findIndex(r=>r[0]===d);const x=L+i*bw+bw/2;txt(svg,x,T+ih-m/top*ih-8,l,{'text-anchor':'middle',fill:'var(--ink-2)','font-size':11.5})});
+})();
+})();
+</script>
+
+</body>
+</html>
