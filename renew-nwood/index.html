@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>B-Ai 서비스 계약 갱신 안내</title>
+<style>
+:root { --ink:#1d2329; --sub:#5b6570; --line:#d5dade; --soft:#f3f5f7; --brand:#2b9bb8; --red:#c0392b; --bg:#eef1f4; --card:#fff; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.6 "Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif; }
+.wrap { max-width:860px; margin:0 auto; padding:24px 16px 120px; }
+.paper { background:var(--card); border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,.08); padding:28px 32px; }
+header { display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid var(--ink); padding-bottom:8px; gap:12px; }
+.logo { font-size:26px; letter-spacing:.35em; font-weight:300; color:#555; }
+.logo b { color:var(--brand); font-weight:300; }
+.doc { font-weight:800; font-size:17px; letter-spacing:.12em; }
+.meta { display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px 24px; margin:14px 0 16px; }
+.to { font-size:18px; font-weight:700; }
+.to small { font-size:14px; font-weight:400; margin-left:6px; }
+.date { color:var(--sub); }
+h1 { font-size:21px; margin:0 0 8px; }
+p { margin:0 0 10px; }
+h2 { font-size:16px; margin:22px 0 8px; padding-left:9px; border-left:3px solid var(--brand); }
+.muted { color:var(--sub); font-size:13px; }
+.svc { border-top:1px solid var(--ink); }
+.row { display:grid; grid-template-columns: 1.3fr 1fr 1.6fr; gap:8px 12px; align-items:center; padding:12px 4px; border-bottom:1px solid var(--line); }
+.row.head { background:var(--soft); font-weight:700; font-size:13px; padding:7px 4px; }
+.row.off .plans { opacity:.35; pointer-events:none; }
+.name b { display:block; }
+.use, .plans { display:flex; flex-wrap:wrap; gap:6px; }
+.req { font-weight:700; }
+.chip { position:relative; display:inline-flex; align-items:center; gap:6px; border:1.5px solid var(--line); border-radius:8px; padding:7px 10px; cursor:pointer; user-select:none; background:#fff; font-size:14px; min-height:40px; }
+.chip input { position:absolute; opacity:0; pointer-events:none; }
+.chip .bx { width:16px; height:16px; border:1.5px solid var(--ink); border-radius:3px; flex:none; display:inline-grid; place-items:center; }
+.chip input:checked + .bx { background:var(--brand); border-color:var(--brand); }
+.chip input:checked + .bx::after { content:''; width:5px; height:9px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg) translate(-1px,-1px); }
+.chip:has(input:checked) { border-color:var(--brand); background:#eaf6f9; }
+.chip:has(input:focus-visible) { outline:2px solid var(--brand); outline-offset:2px; }
+.price { font-variant-numeric:tabular-nums; }
+.was { color:var(--sub); font-size:12px; text-decoration:line-through; }
+.dc { color:var(--red); font-weight:700; }
+.notes { margin:10px 0 0; padding-left:18px; color:var(--sub); font-size:13px; }
+.promo { margin:14px 0 4px; padding:10px 14px; border:1.5px solid var(--red); border-radius:6px; background:#fdf3f2; }
+.promo > b:first-child { color:var(--red); }
+.kv { display:grid; grid-template-columns: 130px 1fr; border-top:1px solid var(--ink); }
+.kv div { padding:7px 10px; border-bottom:1px solid var(--line); }
+.kv div:nth-child(odd) { background:var(--soft); font-weight:700; }
+ol.steps { margin:0; padding-left:20px; }
+.sum { margin-top:22px; border:2px solid var(--ink); border-radius:8px; overflow:hidden; }
+.sum h3 { margin:0; padding:10px 14px; background:var(--ink); color:#fff; font-size:15px; }
+.sum table { width:100%; border-collapse:collapse; font-size:14px; }
+.sum td, .sum th { padding:7px 14px; border-bottom:1px solid var(--line); text-align:left; }
+.sum th { background:var(--soft); font-size:12.5px; color:var(--sub); font-weight:700; }
+.sum td.n, .sum th.n { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.sum tr.tot td { font-weight:800; font-size:16px; border-top:1.5px solid var(--ink); }
+.sum tr.sub td { font-weight:700; }
+.sum .empty { padding:14px; color:var(--sub); }
+.sum .tag { display:inline-block; white-space:nowrap; font-size:11.5px; padding:1px 6px; border-radius:4px; background:var(--soft); color:var(--sub); margin-left:6px; }
+.sum .tag.y { background:#eaf6f9; color:#1d6f85; }
+.sum .bonus { color:var(--red); font-weight:700; font-size:13px; }
+.reply { margin-top:18px; display:grid; gap:10px; }
+.reply label { font-size:13px; color:var(--sub); }
+.reply input, .reply textarea { width:100%; font:inherit; padding:8px 10px; border:1.5px solid var(--line); border-radius:6px; }
+.btns { display:flex; flex-wrap:wrap; gap:8px; }
+button { font:inherit; font-weight:700; border-radius:8px; padding:10px 16px; cursor:pointer; border:1.5px solid var(--ink); background:#fff; color:var(--ink); min-height:44px; }
+button.primary { background:var(--ink); color:#fff; }
+.toast { color:var(--brand); font-weight:700; font-size:13px; min-height:1.4em; }
+footer { margin-top:24px; padding-top:12px; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap; }
+.biz { color:var(--sub); font-size:12.5px; }
+.sign { text-align:right; }
+.sign .co { font-size:16px; font-weight:800; letter-spacing:.1em; }
+.bar { position:fixed; left:0; right:0; bottom:0; background:var(--ink); color:#fff; padding:10px 16px; display:flex; justify-content:center; gap:18px; flex-wrap:wrap; font-size:14px; z-index:5; }
+.bar b { font-variant-numeric:tabular-nums; }
+@media (max-width:640px) {
+  .paper { padding:20px 16px; }
+  .row { grid-template-columns: 1fr; gap:8px; }
+  .row.head { display:none; }
+  .kv { grid-template-columns: 96px 1fr; }
+  .logo { font-size:20px; }
+  .sum table { font-size:13px; }
+  .sum td, .sum th { padding:6px 8px; }
+  .sum .tag { display:block; margin:2px 0 0; width:max-content; }
+  .sum td.n { white-space:normal; }
+}
+@media print {
+  @page { size:A4; margin:10mm 12mm; }
+  body { background:#fff; font-size:10.5pt; }
+  .wrap { padding:0; max-width:none; }
+  .paper { box-shadow:none; padding:0; }
+  .bar, .btns, .toast, .noprint { display:none !important; }
+  .chip { border-width:1px; padding:3px 6px; min-height:0; }
+  .row { padding:6px 4px; }
+  .sum { break-inside:avoid; }
+}
+</style></head>
+<body><div class="wrap"><div class="paper" id="app"></div></div>
+<div class="bar" id="bar" aria-live="polite"></div>
+<script>
+const C = {"folder":"renew-nwood","key":"nwood-2027","to":"앤우드(NWOOD)","person":"담당자님","date":"2026년 10월 23일","months":12,"intro":["항상 BAICE 서비스를 이용해 주셔서 감사합니다.","앤우드에서 이용 중이신 B-Ai 서비스 계약이 \u003cb>2026년 12월 31일\u003c/b>자로 종료될 예정입니다. 내년에도 서비스를 끊김 없이 이용하실 수 있도록 2027년 계약 조건을 아래와 같이 안내드리니, 계속 이용하실 서비스와 구독 방식을 선택해 주십시오."],"services":[{"id":"server","name":"Cloud Server","desc":"서버, 컴퓨팅, DB, 보안, 트래픽","m":272000,"y":2990000,"required":true},{"id":"connect","name":"B. Connect","desc":"영업자료 원스톱 발송, 조달자료 관리","m":109000,"y":1200000},{"id":"agent","name":"B. Agent","desc":"신개념 지능형 전자카다로그","m":245000,"y":2700000},{"id":"g2b","name":"B. G2B","desc":"나라장터 상세페이지 관리","m":272000,"y":2990000},{"id":"finder","name":"B. Finder","desc":"인공지능 유사제품 검색","m":99000,"y":1000000}],"notes":["Cloud Server는 모든 서비스의 기반이라 필수이며, 나머지 서비스는 필요하신 것만 고르실 수 있습니다.","서비스마다 월 구독과 연 구독 중 하나를 고르실 수 있으며, 연 구독이 12개월 기준 더 저렴합니다.","참고 — 지금처럼 다섯 서비스 모두 이용 시: 월 구독 997,000원/월(12개월 11,964,000원) · 연 구독 10,880,000원/년"],"promo":{"until":"2026-11-30","html":"\u003cb>조기 갱신 혜택\u003c/b> — \u003cb>2026년 11월 30일까지\u003c/b> 연 구독으로 갱신하시면 \u003cb>2개월을 추가로 제공\u003c/b>합니다. 연 구독 금액 그대로 \u003cb>14개월\u003c/b>(2027년 1월 1일 ~ 2028년 2월 29일) 이용하실 수 있습니다. (월 구독은 해당되지 않습니다)","bonus":"조기 갱신 혜택 적용 시 연 구독 서비스는 추가 비용 없이 14개월(2027년 1월 1일 ~ 2028년 2월 29일) 이용하실 수 있습니다. (2026년 11월 30일까지 회신)","bonusText":"조기 갱신 혜택: 연 구독 서비스 14개월(2027-01-01 ~ 2028-02-29) 이용 (11월 30일까지 회신)"},"kv":[["현재 계약","2026년 12월 31일 종료"],["갱신 계약 기간","2027년 1월 1일 ~ 2027년 12월 31일 (12개월)"],["월 구독","시작되는 달의 전월 말일에 계산서 청구, 구독일은 매월 1일 ~ 말일 (1월분은 2026년 12월 31일 청구)"],["연 구독","계약 시 계산서 청구, 구독일은 2027년 1월 1일부터 12개월 (11월 30일까지 갱신 시 14개월)"]],"steps":["위에서 서비스 이용 여부와 구독 방식을 골라 회신해 주십시오. (2026년 12월 15일까지, 조기 갱신 혜택은 11월 30일까지)","회신 주시면 계산서를 발송드리고 갱신 계약이 시작됩니다.","2027년 1월 1일부터 선택하신 조건으로 서비스가 이어집니다."],"foot":["회신이 없으시면 서비스 중단을 막기 위해 담당자님께 따로 연락드리겠습니다.","별도 웹사이트의 도메인·호스팅·SSL 비용은 별도입니다.","서비스 범위나 조건 조정이 필요하시면 언제든 말씀해 주십시오."]};
+const won = n => n.toLocaleString('ko-KR');
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const KEY = 'renew-' + C.key;
+let st = {};
+try { st = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+C.services.forEach(s => { st[s.id] = st[s.id] || { use: s.required ? true : null, plan: null }; if (s.required) st[s.id].use = true; });
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
+const promoOn = () => C.promo && new Date() <= new Date(C.promo.until + 'T23:59:59+09:00');
+
+function chip(type, name, value, checked, label) {
+  return `<label class="chip"><input type="${type}" name="${name}" value="${value}"${checked ? ' checked' : ''}><span class="bx"></span>${label}</label>`;
+}
+function priceLabel(now, was) {
+  return was ? `<span class="price"><span class="was">${won(was)}</span> <span class="dc">${won(now)}</span></span>` : `<span class="price">${won(now)}</span>`;
+}
+
+function render() {
+  const rows = C.services.map(s => {
+    const v = st[s.id];
+    const use = s.required ? '<span class="req">필수</span>'
+      : chip('radio', 'u-' + s.id, 'y', v.use === true, '이용') + chip('radio', 'u-' + s.id, 'n', v.use === false, '미이용');
+    const plans = chip('radio', 'p-' + s.id, 'm', v.plan === 'm', '월 ' + priceLabel(s.m, s.wasM))
+      + chip('radio', 'p-' + s.id, 'y', v.plan === 'y', '연 ' + priceLabel(s.y, s.wasY));
+    return `<div class="row${v.use === false ? ' off' : ''}" data-id="${s.id}">
+      <div class="name"><b>${esc(s.name)}</b><span class="muted">${esc(s.desc)}</span></div>
+      <div class="use" role="group" aria-label="${esc(s.name)} 이용 여부">${use}</div>
+      <div class="plans" role="group" aria-label="${esc(s.name)} 구독 방식">${plans}</div></div>`;
+  }).join('');
+  $('#app').innerHTML = `
+  <header><div class="logo">B<b>A</b>ICE</div><div class="doc">계약 갱신 안내</div></header>
+  <div class="meta"><div class="to">${esc(C.to)} <small>${esc(C.person)} 귀중</small></div><div class="date">${esc(C.date)}</div></div>
+  <h1>B-Ai 서비스 계약 갱신 안내</h1>
+  ${C.intro.map(t => `<p>${t}</p>`).join('')}
+  <h2>1. 서비스 선택 — 이용 여부와 구독 방식을 눌러 주십시오</h2>
+  <div class="svc"><div class="row head"><div>서비스</div><div>이용 여부</div><div>구독 방식 (단위: 원, 부가세 별도)</div></div>${rows}</div>
+  <ul class="notes">${C.notes.map(t => `<li>${t}</li>`).join('')}</ul>
+  ${C.promo ? `<div class="promo">${C.promo.html}</div>` : ''}
+  <div class="sum" id="sum"></div>
+  <div class="reply noprint">
+    <div><label for="who">회신하시는 분 (성함·연락처)</label><input id="who" autocomplete="off" value="${esc(st._who || '')}"></div>
+    <div><label for="memo">요청 사항 (선택)</label><textarea id="memo" rows="2">${esc(st._memo || '')}</textarea></div>
+    <div class="btns"><button class="primary" id="copy">선택 내용 복사</button><button id="print">PDF로 저장 · 인쇄</button></div>
+    <div class="toast" id="toast" role="status"></div>
+    <p class="muted">선택을 마치신 뒤 <b>선택 내용 복사</b>를 눌러 메일·카카오톡으로 보내 주시거나, <b>PDF로 저장</b>해 회신해 주십시오. 이 화면에서 고른 내용은 자동으로 전송되지 않습니다.</p>
+  </div>
+  <h2>2. 계약 기간과 청구 방식</h2>
+  <div class="kv">${C.kv.map(([k, v]) => `<div>${k}</div><div>${v}</div>`).join('')}</div>
+  <h2>3. 진행 절차</h2>
+  <ol class="steps">${C.steps.map(t => `<li>${t}</li>`).join('')}</ol>
+  <ul class="notes">${C.foot.map(t => `<li>${t}</li>`).join('')}</ul>
+  <footer><div class="biz">상호 BAICE · 대표 윤석균 · 사업자등록번호 536-57-00406<br>업태 정보통신업, 서비스업 · 종목 응용소프트웨어 개발 및 공급업, 전문디자인</div>
+  <div class="sign"><div class="co">BAICE</div>대표 윤석균</div></footer>`;
+  update();
+}
+
+function calc() {
+  const picked = C.services.filter(s => st[s.id].use === true);
+  const m = picked.filter(s => st[s.id].plan === 'm'), y = picked.filter(s => st[s.id].plan === 'y');
+  const undecided = C.services.filter(s => st[s.id].use == null || (st[s.id].use && !st[s.id].plan));
+  const mSum = m.reduce((a, s) => a + s.m, 0), ySum = y.reduce((a, s) => a + s.y, 0);
+  const total = mSum * C.months + ySum;
+  return { picked, m, y, undecided, mSum, ySum, total, vat: Math.round(total * 0.1) };
+}
+
+function update() {
+  const r = calc();
+  const bonus = promoOn() && r.y.length;
+  let html = '<h3>선택하신 내용과 합계</h3>';
+  if (!r.picked.some(s => st[s.id].plan)) {
+    html += '<div class="empty">서비스마다 이용 여부와 월·연 구독을 고르시면 합계가 계산됩니다.</div>';
+  } else {
+    html += '<table><thead><tr><th>서비스</th><th>구독</th><th class="n">계약 기간 금액</th></tr></thead><tbody>';
+    r.picked.filter(s => st[s.id].plan).forEach(s => {
+      const yr = st[s.id].plan === 'y';
+      html += `<tr><td>${esc(s.name)}</td><td>${yr ? '연 구독<span class="tag y">1회 청구</span>' : `월 구독 ${won(s.m)}원/월<span class="tag">매월</span>`}</td><td class="n">${won(yr ? s.y : s.m * C.months)}</td></tr>`;
+    });
+    if (r.m.length) html += `<tr class="sub"><td colspan="2">월 구독 합계 (매월 청구) × ${C.months}개월</td><td class="n">${won(r.mSum)}/월 · ${won(r.mSum * C.months)}</td></tr>`;
+    if (r.y.length) html += `<tr class="sub"><td colspan="2">연 구독 합계 (계약 시 1회 청구)</td><td class="n">${won(r.ySum)}</td></tr>`;
+    html += `<tr class="sub"><td colspan="2">계약 기간 합계 (부가세 별도)</td><td class="n">${won(r.total)}</td></tr>
+      <tr><td colspan="2">부가세 10%</td><td class="n">${won(r.vat)}</td></tr>
+      <tr class="tot"><td colspan="2">총 합계 (부가세 포함)</td><td class="n">${won(r.total + r.vat)}원</td></tr></tbody></table>`;
+    if (bonus) html += `<div class="empty bonus">${C.promo.bonus}</div>`;
+  }
+  if (r.undecided.length) html += `<div class="empty">아직 고르지 않은 서비스: ${r.undecided.map(s => esc(s.name)).join(', ')}</div>`;
+  $('#sum').innerHTML = html;
+  $('#bar').innerHTML = r.total ? `<span>월 구독 <b>${won(r.mSum)}</b>/월</span><span>연 구독 <b>${won(r.ySum)}</b></span><span>총 <b>${won(r.total + r.vat)}</b>원 (VAT 포함)</span>`
+    : '<span>서비스와 구독 방식을 고르시면 합계가 여기에 보입니다</span>';
+  document.querySelectorAll('.row[data-id]').forEach(el => el.classList.toggle('off', st[el.dataset.id].use === false));
+}
+
+function text() {
+  const r = calc();
+  const L = [`[B-Ai 서비스 계약 갱신 회신] ${C.to}`, ''];
+  C.services.forEach(s => {
+    const v = st[s.id];
+    L.push(`- ${s.name}: ${v.use === false ? '미이용' : v.use == null ? '미선택' : v.plan === 'y' ? `연 구독 ${won(s.y)}원` : v.plan === 'm' ? `월 구독 ${won(s.m)}원/월` : '이용 (구독 방식 미선택)'}`);
+  });
+  L.push('', `월 구독 합계: ${won(r.mSum)}원/월 (${C.months}개월 ${won(r.mSum * C.months)}원)`, `연 구독 합계: ${won(r.ySum)}원`,
+    `계약 기간 합계: ${won(r.total)}원 + 부가세 ${won(r.vat)}원 = ${won(r.total + r.vat)}원`);
+  if (promoOn() && r.y.length) L.push(C.promo.bonusText);
+  if (st._who) L.push('', '회신자: ' + st._who);
+  if (st._memo) L.push('요청 사항: ' + st._memo);
+  return L.join('\n');
+}
+
+document.addEventListener('change', e => {
+  const t = e.target, m = /^(u|p)-(.+)$/.exec(t.name || '');
+  if (!m) return;
+  const v = st[m[2]];
+  if (m[1] === 'u') { v.use = t.value === 'y'; if (!v.use) { v.plan = null; document.querySelectorAll(`input[name="p-${m[2]}"]`).forEach(i => i.checked = false); } }
+  else { v.plan = t.value; if (v.use == null) { v.use = true; const u = document.querySelector(`input[name="u-${m[2]}"][value="y"]`); if (u) u.checked = true; } }
+  save(); update();
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'who') st._who = e.target.value;
+  if (e.target.id === 'memo') st._memo = e.target.value;
+  save();
+});
+document.addEventListener('click', async e => {
+  if (e.target.id === 'print') window.print();
+  if (e.target.id === 'copy') {
+    const t = text();
+    try { await navigator.clipboard.writeText(t); $('#toast').textContent = '복사했습니다. 메일이나 카카오톡에 붙여 넣어 보내 주십시오.'; }
+    catch (err) { const ta = document.createElement('textarea'); ta.value = t; document.body.append(ta); ta.select(); document.execCommand('copy'); ta.remove(); $('#toast').textContent = '복사했습니다.'; }
+  }
+});
+render();
+</script>
+</body></html>
