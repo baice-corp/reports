@@ -174,14 +174,19 @@ function update() {
   let html = '<h3>선택하신 내용과 합계</h3>';
   const first = new Date(C.start + 'T00:00:00+09:00'); first.setDate(0);
   const firstBill = `${first.getFullYear()}.${String(first.getMonth() + 1).padStart(2, '0')}.${String(first.getDate()).padStart(2, '0')}`;
-  html += `<div class="period"><div><b>계약 기간</b> ${span(C.start, C.end, C.months)}</div>${r.m.length ? `<div><b>월 구독 청구</b> 매월 전월 말일 계산서 청구 (첫 청구 ${firstBill}, ${C.months}회)</div>` : ''}${r.y.length ? `<div><b>연 구독 청구</b> 계약 시 계산서 1회 청구</div>` : ''}${bonus ? `<div class="bonus"><b>조기 갱신 혜택</b> 연 구독 서비스 ${span(C.start, C.promo.end, C.months + C.promo.extra, C.promo.extra)}</div>` : C.promo && promoOn() ? `<div class="muted">${ymd(C.promo.until)}까지 연 구독으로 갱신하시면 연 구독 서비스를 ${C.promo.extra}개월 더 이용하실 수 있습니다.</div>` : ''}</div>`;
+  const yEnd = bonus || (C.promo && promoOn()) ? C.promo.end : C.end, yN = yEnd === C.end ? C.months : C.months + C.promo.extra, yX = yN - C.months;
+  const ps = [];
+  if (r.y.length || !r.m.length) ps.push(`<div${yX ? ' class="bonus"' : ''}><b>연 구독</b> ${span(C.start, yEnd, yN, yX)}${yX ? ' — 조기 갱신 혜택 포함' : ''} · 계약 시 계산서 1회 청구</div>`);
+  if (r.m.length || !r.y.length) ps.push(`<div><b>월 구독</b> ${span(C.start, C.end, C.months)} · 매월 전월 말일 계산서 청구 (첫 청구 ${firstBill}, ${C.months}회)</div>`);
+  if (yX) ps.push(`<div class="muted">${ymd(C.promo.until)}까지 회신하신 경우에 해당합니다. 이후 갱신 시 연 구독도 ${ymd(C.start)} ~ ${ymd(C.end)} · ${C.months}개월입니다.</div>`);
+  html += `<div class="period">${ps.join('')}</div>`;
   if (!r.picked.some(s => st[s.id].plan)) {
     html += '<div class="empty">서비스마다 이용 여부와 월·연 구독을 고르시면 합계가 계산됩니다.</div>';
   } else {
     html += '<table><thead><tr><th>서비스</th><th>구독</th><th class="n">계약 기간 금액</th></tr></thead><tbody>';
     r.picked.filter(s => st[s.id].plan).forEach(s => {
       const yr = st[s.id].plan === 'y';
-      const per = yr && bonus ? `<span class="per bonus">${ymd(C.start)} ~ ${ymd(C.promo.end)} · ${C.months + C.promo.extra}개월 (+${C.promo.extra}개월)</span>` : `<span class="per">${ymd(C.start)} ~ ${ymd(C.end)} · ${C.months}개월</span>`;
+      const per = yr && C.promo && promoOn() ? `<span class="per bonus">${ymd(C.start)} ~ ${ymd(C.promo.end)} · ${C.months + C.promo.extra}개월 (+${C.promo.extra}개월)</span>` : `<span class="per">${ymd(C.start)} ~ ${ymd(C.end)} · ${C.months}개월</span>`;
       html += `<tr><td>${esc(s.name)}${per}</td><td>${yr ? '연 구독<span class="tag y">1회 청구</span>' : `월 구독 ${won(s.m)}원/월<span class="tag">매월</span>`}</td><td class="n">${won(yr ? s.y : s.m * C.months)}</td></tr>`;
     });
     if (r.m.length) html += `<tr class="sub"><td colspan="2">월 구독 합계 (매월 청구) × ${C.months}개월</td><td class="n">${won(r.mSum)}/월 · ${won(r.mSum * C.months)}</td></tr>`;
@@ -189,7 +194,6 @@ function update() {
     html += `<tr class="sub"><td colspan="2">계약 기간 합계 (부가세 별도)</td><td class="n">${won(r.total)}</td></tr>
       <tr><td colspan="2">부가세 10%</td><td class="n">${won(r.vat)}</td></tr>
       <tr class="tot"><td colspan="2">총 합계 (부가세 포함)</td><td class="n">${won(r.total + r.vat)}원</td></tr></tbody></table>`;
-    if (bonus) html += `<div class="empty bonus">${C.promo.bonus}</div>`;
   }
   if (r.undecided.length) html += `<div class="empty">아직 고르지 않은 서비스: ${r.undecided.map(s => esc(s.name)).join(', ')}</div>`;
   $('#sum').innerHTML = html;
