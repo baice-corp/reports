@@ -57,6 +57,10 @@ ol.steps { margin:0; padding-left:20px; }
 .sum .empty { padding:14px; color:var(--sub); }
 .sum .tag { display:inline-block; white-space:nowrap; font-size:11.5px; padding:1px 6px; border-radius:4px; background:var(--soft); color:var(--sub); margin-left:6px; }
 .sum .tag.y { background:#eaf6f9; color:#1d6f85; }
+.sum .period { padding:10px 14px; background:var(--soft); border-bottom:1px solid var(--line); font-size:14px; display:grid; gap:2px; }
+.sum .period b { margin-right:6px; }
+.sum .per { display:block; font-size:12px; color:var(--sub); font-variant-numeric:tabular-nums; }
+.sum .per.bonus { color:var(--red); }
 .sum .bonus { color:var(--red); font-weight:700; font-size:13px; }
 .reply { margin-top:18px; display:grid; gap:10px; }
 .reply label { font-size:13px; color:var(--sub); }
@@ -96,7 +100,7 @@ footer { margin-top:24px; padding-top:12px; border-top:1px solid var(--line); di
 <body><div class="wrap"><div class="paper" id="app"></div></div>
 <div class="bar" id="bar" aria-live="polite"></div>
 <script>
-const C = {"folder":"renew-nwood","key":"nwood-2027","to":"앤우드(NWOOD)","person":"담당자님","date":"2026년 10월 23일","months":12,"intro":["항상 BAICE 서비스를 이용해 주셔서 감사합니다.","앤우드에서 이용 중이신 B-Ai 서비스 계약이 \u003cb>2026년 12월 31일\u003c/b>자로 종료될 예정입니다. 내년에도 서비스를 끊김 없이 이용하실 수 있도록 2027년 계약 조건을 아래와 같이 안내드리니, 계속 이용하실 서비스와 구독 방식을 선택해 주십시오."],"services":[{"id":"server","name":"Cloud Server","desc":"서버, 컴퓨팅, DB, 보안, 트래픽","m":272000,"y":2990000,"required":true},{"id":"connect","name":"B. Connect","desc":"영업자료 원스톱 발송, 조달자료 관리","m":109000,"y":1200000},{"id":"agent","name":"B. Agent","desc":"신개념 지능형 전자카다로그","m":245000,"y":2700000},{"id":"g2b","name":"B. G2B","desc":"나라장터 상세페이지 관리","m":272000,"y":2990000},{"id":"finder","name":"B. Finder","desc":"인공지능 유사제품 검색","m":99000,"y":1000000}],"notes":["Cloud Server는 모든 서비스의 기반이라 필수이며, 나머지 서비스는 필요하신 것만 고르실 수 있습니다.","서비스마다 월 구독과 연 구독 중 하나를 고르실 수 있으며, 연 구독이 12개월 기준 더 저렴합니다.","참고 — 지금처럼 다섯 서비스 모두 이용 시: 월 구독 997,000원/월(12개월 11,964,000원) · 연 구독 10,880,000원/년"],"promo":{"until":"2026-11-30","html":"\u003cb>조기 갱신 혜택\u003c/b> — \u003cb>2026년 11월 30일까지\u003c/b> 연 구독으로 갱신하시면 \u003cb>2개월을 추가로 제공\u003c/b>합니다. 연 구독 금액 그대로 \u003cb>14개월\u003c/b>(2027년 1월 1일 ~ 2028년 2월 29일) 이용하실 수 있습니다. (월 구독은 해당되지 않습니다)","bonus":"조기 갱신 혜택 적용 시 연 구독 서비스는 추가 비용 없이 14개월(2027년 1월 1일 ~ 2028년 2월 29일) 이용하실 수 있습니다. (2026년 11월 30일까지 회신)","bonusText":"조기 갱신 혜택: 연 구독 서비스 14개월(2027-01-01 ~ 2028-02-29) 이용 (11월 30일까지 회신)"},"kv":[["현재 계약","2026년 12월 31일 종료"],["갱신 계약 기간","2027년 1월 1일 ~ 2027년 12월 31일 (12개월)"],["월 구독","시작되는 달의 전월 말일에 계산서 청구, 구독일은 매월 1일 ~ 말일 (1월분은 2026년 12월 31일 청구)"],["연 구독","계약 시 계산서 청구, 구독일은 2027년 1월 1일부터 12개월 (11월 30일까지 갱신 시 14개월)"]],"steps":["위에서 서비스 이용 여부와 구독 방식을 골라 회신해 주십시오. (2026년 12월 15일까지, 조기 갱신 혜택은 11월 30일까지)","회신 주시면 계산서를 발송드리고 갱신 계약이 시작됩니다.","2027년 1월 1일부터 선택하신 조건으로 서비스가 이어집니다."],"foot":["회신이 없으시면 서비스 중단을 막기 위해 담당자님께 따로 연락드리겠습니다.","별도 웹사이트의 도메인·호스팅·SSL 비용은 별도입니다.","서비스 범위나 조건 조정이 필요하시면 언제든 말씀해 주십시오."]};
+const C = {"folder":"renew-nwood","file":"anwood/앤우드_계약갱신안내.html","key":"nwood-2027","to":"앤우드(NWOOD)","person":"담당자님","date":"2026년 10월 23일","months":12,"start":"2027-01-01","end":"2027-12-31","intro":["항상 BAICE 서비스를 이용해 주셔서 감사합니다.","앤우드에서 이용 중이신 B-Ai 서비스 계약이 \u003cb>2026년 12월 31일\u003c/b>자로 종료될 예정입니다. 내년에도 서비스를 끊김 없이 이용하실 수 있도록 2027년 계약 조건을 아래와 같이 안내드리니, 계속 이용하실 서비스와 구독 방식을 선택해 주십시오."],"services":[{"id":"server","name":"Cloud Server","desc":"서버, 컴퓨팅, DB, 보안, 트래픽","m":272000,"y":2990000,"required":true},{"id":"connect","name":"B. Connect","desc":"영업자료 원스톱 발송, 조달자료 관리","m":109000,"y":1200000},{"id":"agent","name":"B. Agent","desc":"신개념 지능형 전자카다로그","m":245000,"y":2700000},{"id":"g2b","name":"B. G2B","desc":"나라장터 상세페이지 관리","m":272000,"y":2990000},{"id":"finder","name":"B. Finder","desc":"인공지능 유사제품 검색","m":99000,"y":1000000}],"notes":["Cloud Server는 모든 서비스의 기반이라 필수이며, 나머지 서비스는 필요하신 것만 고르실 수 있습니다.","서비스마다 월 구독과 연 구독 중 하나를 고르실 수 있으며, 연 구독이 12개월 기준 더 저렴합니다.","참고 — 지금처럼 다섯 서비스 모두 이용 시: 월 구독 997,000원/월(12개월 11,964,000원) · 연 구독 10,880,000원/년"],"promo":{"until":"2026-11-30","extra":2,"end":"2028-02-29","html":"\u003cb>조기 갱신 혜택\u003c/b> — \u003cb>2026년 11월 30일까지\u003c/b> 연 구독으로 갱신하시면 \u003cb>2개월을 추가로 제공\u003c/b>합니다. 연 구독 금액 그대로 \u003cb>14개월\u003c/b>(2027년 1월 1일 ~ 2028년 2월 29일) 이용하실 수 있습니다. (월 구독은 해당되지 않습니다)","bonus":"조기 갱신 혜택 적용 시 연 구독 서비스는 추가 비용 없이 14개월(2027년 1월 1일 ~ 2028년 2월 29일) 이용하실 수 있습니다. (2026년 11월 30일까지 회신)","bonusText":"조기 갱신 혜택: 연 구독 서비스 14개월(2027-01-01 ~ 2028-02-29) 이용 (11월 30일까지 회신)"},"kv":[["현재 계약","2026년 12월 31일 종료"],["갱신 계약 기간","2027년 1월 1일 ~ 2027년 12월 31일 (12개월)"],["월 구독","시작되는 달의 전월 말일에 계산서 청구, 구독일은 매월 1일 ~ 말일 (1월분은 2026년 12월 31일 청구)"],["연 구독","계약 시 계산서 청구, 구독일은 2027년 1월 1일부터 12개월 (11월 30일까지 갱신 시 14개월)"]],"steps":["위에서 서비스 이용 여부와 구독 방식을 골라 회신해 주십시오. (2026년 12월 15일까지, 조기 갱신 혜택은 11월 30일까지)","회신 주시면 계산서를 발송드리고 갱신 계약이 시작됩니다.","2027년 1월 1일부터 선택하신 조건으로 서비스가 이어집니다."],"foot":["회신이 없으시면 서비스 중단을 막기 위해 담당자님께 따로 연락드리겠습니다.","별도 웹사이트의 도메인·호스팅·SSL 비용은 별도입니다.","서비스 범위나 조건 조정이 필요하시면 언제든 말씀해 주십시오."]};
 const won = n => n.toLocaleString('ko-KR');
 const $ = (s, el = document) => el.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -105,6 +109,8 @@ let st = {};
 try { st = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
 C.services.forEach(s => { st[s.id] = st[s.id] || { use: s.required ? true : null, plan: null }; if (s.required) st[s.id].use = true; });
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
+const ymd = d => d.replace(/-/g, '.');
+const span = (from, to, n, extra) => `${ymd(from)} ~ ${ymd(to)} · ${n}개월${extra ? ` (+${extra}개월)` : ''}`;
 const promoOn = () => C.promo && new Date() <= new Date(C.promo.until + 'T23:59:59+09:00');
 
 function chip(type, name, value, checked, label) {
@@ -166,13 +172,17 @@ function update() {
   const r = calc();
   const bonus = promoOn() && r.y.length;
   let html = '<h3>선택하신 내용과 합계</h3>';
+  const first = new Date(C.start + 'T00:00:00+09:00'); first.setDate(0);
+  const firstBill = `${first.getFullYear()}.${String(first.getMonth() + 1).padStart(2, '0')}.${String(first.getDate()).padStart(2, '0')}`;
+  html += `<div class="period"><div><b>계약 기간</b> ${span(C.start, C.end, C.months)}</div>${r.m.length ? `<div><b>월 구독 청구</b> 매월 전월 말일 계산서 청구 (첫 청구 ${firstBill}, ${C.months}회)</div>` : ''}${r.y.length ? `<div><b>연 구독 청구</b> 계약 시 계산서 1회 청구</div>` : ''}${bonus ? `<div class="bonus"><b>조기 갱신 혜택</b> 연 구독 서비스 ${span(C.start, C.promo.end, C.months + C.promo.extra, C.promo.extra)}</div>` : C.promo && promoOn() ? `<div class="muted">${ymd(C.promo.until)}까지 연 구독으로 갱신하시면 연 구독 서비스를 ${C.promo.extra}개월 더 이용하실 수 있습니다.</div>` : ''}</div>`;
   if (!r.picked.some(s => st[s.id].plan)) {
     html += '<div class="empty">서비스마다 이용 여부와 월·연 구독을 고르시면 합계가 계산됩니다.</div>';
   } else {
     html += '<table><thead><tr><th>서비스</th><th>구독</th><th class="n">계약 기간 금액</th></tr></thead><tbody>';
     r.picked.filter(s => st[s.id].plan).forEach(s => {
       const yr = st[s.id].plan === 'y';
-      html += `<tr><td>${esc(s.name)}</td><td>${yr ? '연 구독<span class="tag y">1회 청구</span>' : `월 구독 ${won(s.m)}원/월<span class="tag">매월</span>`}</td><td class="n">${won(yr ? s.y : s.m * C.months)}</td></tr>`;
+      const per = yr && bonus ? `<span class="per bonus">${ymd(C.start)} ~ ${ymd(C.promo.end)} · ${C.months + C.promo.extra}개월 (+${C.promo.extra}개월)</span>` : `<span class="per">${ymd(C.start)} ~ ${ymd(C.end)} · ${C.months}개월</span>`;
+      html += `<tr><td>${esc(s.name)}${per}</td><td>${yr ? '연 구독<span class="tag y">1회 청구</span>' : `월 구독 ${won(s.m)}원/월<span class="tag">매월</span>`}</td><td class="n">${won(yr ? s.y : s.m * C.months)}</td></tr>`;
     });
     if (r.m.length) html += `<tr class="sub"><td colspan="2">월 구독 합계 (매월 청구) × ${C.months}개월</td><td class="n">${won(r.mSum)}/월 · ${won(r.mSum * C.months)}</td></tr>`;
     if (r.y.length) html += `<tr class="sub"><td colspan="2">연 구독 합계 (계약 시 1회 청구)</td><td class="n">${won(r.ySum)}</td></tr>`;
@@ -190,10 +200,10 @@ function update() {
 
 function text() {
   const r = calc();
-  const L = [`[B-Ai 서비스 계약 갱신 회신] ${C.to}`, ''];
+  const L = [`[B-Ai 서비스 계약 갱신 회신] ${C.to}`, `계약 기간: ${span(C.start, C.end, C.months)}`, ''];
   C.services.forEach(s => {
     const v = st[s.id];
-    L.push(`- ${s.name}: ${v.use === false ? '미이용' : v.use == null ? '미선택' : v.plan === 'y' ? `연 구독 ${won(s.y)}원` : v.plan === 'm' ? `월 구독 ${won(s.m)}원/월` : '이용 (구독 방식 미선택)'}`);
+    L.push(`- ${s.name}: ${v.use === false ? '미이용' : v.use == null ? '미선택' : v.plan === 'y' ? `연 구독 ${won(s.y)}원 (${promoOn() ? span(C.start, C.promo.end, C.months + C.promo.extra, C.promo.extra) : span(C.start, C.end, C.months)})` : v.plan === 'm' ? `월 구독 ${won(s.m)}원/월 (${span(C.start, C.end, C.months)})` : '이용 (구독 방식 미선택)'}`);
   });
   L.push('', `월 구독 합계: ${won(r.mSum)}원/월 (${C.months}개월 ${won(r.mSum * C.months)}원)`, `연 구독 합계: ${won(r.ySum)}원`,
     `계약 기간 합계: ${won(r.total)}원 + 부가세 ${won(r.vat)}원 = ${won(r.total + r.vat)}원`);
