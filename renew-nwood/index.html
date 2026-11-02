@@ -180,9 +180,9 @@ function update() {
   const firstBill = `${first.getFullYear()}.${String(first.getMonth() + 1).padStart(2, '0')}.${String(first.getDate()).padStart(2, '0')}`;
   const yEnd = bonus || (C.promo && promoOn()) ? C.promo.end : C.end, yN = yEnd === C.end ? C.months : C.months + C.promo.extra, yX = yN - C.months;
   const ps = [];
-  if (r.y.length || !r.m.length) ps.push(`<div${yX ? ' class="bonus"' : ''}><b>연 구독</b> ${span(C.start, yEnd, yN, yX)}${yX ? ' — 조기 갱신 혜택 포함' : ''} · 계약 시 계산서 1회 청구</div>`);
-  if (r.m.length || !r.y.length) ps.push(`<div><b>월 구독</b> ${span(C.start, C.end, C.months)} · 매월 전월 말일 계산서 청구 (첫 청구 ${firstBill}, ${C.months}회)</div>`);
-  if (yX && (r.y.length || !r.m.length)) ps.push(`<div class="muted">${ymd(C.promo.until)}까지 회신하신 경우에 해당합니다. 이후 갱신 시 연 구독도 ${span(C.start, C.end, C.months)}입니다.</div>`);
+  if (r.y.length || !r.m.length) ps.push(`<div${yX ? ' class="bonus"' : ''}><b>연 구독</b> ${span(C.start, yEnd, yN, yX)}${yX ? ' — ' + (C.promo.label || '조기 갱신 혜택') + ' 포함' : ''} · 계약 시 계산서 1회 청구</div>`);
+  if (r.m.length || !r.y.length) ps.push(`<div><b>월 구독</b> ${span(C.start, C.end, C.months)} · 매월 전월 말일 계산서 청구 (${C.firstBill || "첫 청구 " + firstBill}, ${C.months}회)</div>`);
+  if (yX && (r.y.length || !r.m.length)) ps.push(`<div class="muted">${ymd(C.promo.until)}까지 회신하신 경우에 해당합니다. 이후 ${C.promo.after || "갱신"} 시 연 구독도 ${span(C.start, C.end, C.months)}입니다.</div>`);
   html += `<div class="period">${ps.join('')}</div>`;
   if (!r.picked.some(s => st[s.id].plan)) {
     html += '<div class="empty">서비스마다 이용 여부와 월·연 구독을 고르시면 합계가 계산됩니다.</div>';
